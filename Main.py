@@ -23,7 +23,7 @@ def run(activeScene, width: int, height: int):
             else:
                 filtered_events.append(event)
         #Runs Scene methods
-        activeScene.ProcessInput(filtered_events, pressedKeys)
+        activeScene.ProcessInputs(filtered_events, pressedKeys)
         activeScene.Update()
         activeScene.Render(screen)
 
@@ -40,5 +40,6 @@ if __name__ == "__main__":
     import pygame
     pygame.init()
     pygame.mouse.set_visible(False)
-    scene = Scenes.SceneBase()
-    run(scene, width = 1280, height = 720)
+    w, h = 1280, 720
+    scene = Scenes.TestScene1(WIDTH = w, HEIGHT = h)
+    run(scene, width = w, height = h)
