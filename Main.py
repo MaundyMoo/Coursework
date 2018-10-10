@@ -1,4 +1,3 @@
-import Scenes
 def run(activeScene, width: int, height: int):
     #Creates the screen object 
     screen = pygame.display.set_mode((width, height))
@@ -37,9 +36,10 @@ def run(activeScene, width: int, height: int):
     pygame.quit()
 
 if __name__ == "__main__":
-    import pygame
+    import pygame, Scenes
+    from Constants import SCREEN_WIDTH, SCREEN_HEIGHT 
     pygame.init()
     pygame.mouse.set_visible(False)
     w, h = 1280, 720
-    scene = Scenes.TestScene1(WIDTH = w, HEIGHT = h)
-    run(scene, width = w, height = h)
+    scene = Scenes.TestScene1(WIDTH = SCREEN_WIDTH, HEIGHT = SCREEN_HEIGHT)
+    run(scene, width = SCREEN_WIDTH, height = SCREEN_HEIGHT)
