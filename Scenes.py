@@ -1,4 +1,4 @@
-import pygame
+import pygame, Image
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
         self.next = self
@@ -14,11 +14,11 @@ class SceneBase:
     def Terminate(self):
         self.SwitchScene(None)
 
-class TestScene1(SceneBase):
+class TestScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
-        self.font = pygame.font.SysFont("Arial", 32)
-        self.msg = self.font.render("Hello", True, (0,0,255))
+        self.test = Image.ReadImage('res/test.png')
+        print(type(self.test))
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -26,13 +26,5 @@ class TestScene1(SceneBase):
                     self.SwitchScene(TestScene2(self.WIDTH, self.HEIGHT))
     def Render(self, screen):
         screen.fill((0,0,0))
-        screen.blit(self.msg, (int(self.WIDTH / 2), self.HEIGHT / 2))
-class TestScene2(SceneBase):
-    def __init__(self, WIDTH: int, HEIGHT: int):
-        super().__init__(WIDTH, HEIGHT)
-        self.font = pygame.font.SysFont("Arial", 32)
-        self.msg = self.font.render("World", True, (255,0,0))
-    def Render(self, screen):
-        screen.fill((0,0,0))
-        screen.blit(self.msg, (int(self.WIDTH / 2), self.HEIGHT / 2))
+        screen.blit(self.test, (int(self.WIDTH / 2), self.HEIGHT / 2))
         

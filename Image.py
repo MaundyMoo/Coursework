@@ -1,10 +1,11 @@
-from pygame import image
+from pygame import image as pyimg
 from PIL import Image as Img
-import Constants
-def ReadImage(path):
-    path = CONSTANTS.getPath(path)
-    #Changes any incorrect slashes in the path to correct ones, 
-    #which should allow the code to work on linux as well
+import Constants, os
+def ReadImage(path: str):
+    path = Constants.getPath(path)
+    #Boiler plate code
+    #Changes the slashes of the path string to all be the same which should
+    #prevent any issues finding files
     canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-    image = pygame.image.load(path).convert()
+    image = pyimg.load(path)
     return image

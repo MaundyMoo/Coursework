@@ -41,5 +41,5 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mouse.set_visible(False)
     w, h = 1280, 720
-    scene = Scenes.TestScene1(WIDTH = SCREEN_WIDTH, HEIGHT = SCREEN_HEIGHT)
+    scene = Scenes.TestScene(WIDTH = SCREEN_WIDTH, HEIGHT = SCREEN_HEIGHT)
     run(scene, width = SCREEN_WIDTH, height = SCREEN_HEIGHT)
