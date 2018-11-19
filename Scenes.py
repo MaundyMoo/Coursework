@@ -18,7 +18,6 @@ class TestScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
         self.test = Image.ReadImage('res/test.png')
-        print(type(self.test))
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
