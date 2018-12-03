@@ -1,4 +1,4 @@
-import pygame, Image
+import pygame, Image, Tiles
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
         self.next = self
@@ -18,6 +18,7 @@ class TestScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
         self.test = Image.ReadImage('res/test.png')
+        self.testTile = Tiles.Tile(gridPos = (0,0), spritePath = 'res/tile.png', collision = False)
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -25,5 +26,6 @@ class TestScene(SceneBase):
                     self.SwitchScene(TestScene2(self.WIDTH, self.HEIGHT))
     def Render(self, screen):
         screen.fill((0,0,0))
+        self.testTile.Render(screen)
         screen.blit(self.test, (int(self.WIDTH / 2), self.HEIGHT / 2))
         

@@ -7,4 +7,4 @@ class Tile:
     def isCollidable(self) -> bool:
         return collision
     def Render(self, screen):
-        screen.blit(self.sprite, (self.x * Constants.TILESIZE, self.y * Constants.TILESIZE)
+        screen.blit(self.sprite, (self.x * Constants.TILESIZE, self.y * Constants.TILESIZE))
