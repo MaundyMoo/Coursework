@@ -31,10 +31,10 @@ class SpriteSheet:
         width, height = self.sheet.size
         pixelmap = [pixels[i * width:
             (i+1) * width] for i in range(height)]
-        for y in range(0, int((len(pixelmap)) / self.spriteSize)+1):
+        for y in range(0, int(len(pixels) / self.spriteSize) + 1):
             row = []
-            for x in range(0, int((len(pixelmap[0])) / self.spriteSize)+1):
-                sprite = self.sheet.crop((x * self.spriteSize,y * self.spriteSize, (x * (self.spriteSize+1)),(y * (self.spriteSize+1))))
+            for x in range(0, int(len(pixels[0]) / self.spriteSize) + 1):
+                sprite = self.sheet.crop((x * self.spriteSize,y * self.spriteSize,(x * self.spriteSize)+self.spriteSize,(y * self.spriteSize)+self.spriteSize))
                 row.append(sprite)
             sprites.append(row)
         return sprites
