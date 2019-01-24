@@ -18,6 +18,7 @@ class TestScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
         self.TileMap = []
+        self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
         for y in range(0, int(HEIGHT/Constants.TILESIZE)):
             for x in range(0, int(WIDTH/Constants.TILESIZE)):
                 self.TileMap.append(Tiles.Tile(gridPos = (x, y), spritePath = 'res/tile.png', collision = False))
