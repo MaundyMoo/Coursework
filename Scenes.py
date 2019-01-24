@@ -21,7 +21,8 @@ class TestScene(SceneBase):
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
         for y in range(0, int(HEIGHT/Constants.TILESIZE)):
             for x in range(0, int(WIDTH/Constants.TILESIZE)):
-                self.TileMap.append(Tiles.Tile(gridPos = (x, y), spritePath = 'res/tile.png', collision = False))
+                self.TileMap.append(Tiles.Tile(gridPos = (x, y),
+                                    sprite = self.spritesheet.returnSprite(0, 0), collision = False))
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
