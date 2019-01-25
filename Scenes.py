@@ -22,7 +22,7 @@ class TestScene(SceneBase):
         for y in range(0, int(HEIGHT/Constants.TILESIZE)):
             for x in range(0, int(WIDTH/Constants.TILESIZE)):
                 self.TileMap.append(Tiles.Tile(gridPos = (x, y),
-                                    sprite = self.spritesheet.returnSprite(0, 0), collision = False))
+                                    sprite = self.spritesheet.returnSprite(x % 2, y % 2), collision = False))
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
