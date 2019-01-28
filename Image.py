@@ -19,7 +19,6 @@ class SpriteSheet:
         #Allows me to access the alpha channel which will be necessary later for when I need to remove colours
         self.sheet = self.sheet.convert('RGBA')
         self.spriteMap = self.getSpriteTiles()
-        print(self.spriteMap)
         self.sheet.close()
 
     #Returns a list of every sprite on the sheet,

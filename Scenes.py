@@ -21,13 +21,22 @@ class TestScene(SceneBase):
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
         for y in range(0, int(HEIGHT/Constants.TILESIZE)):
             for x in range(0, int(WIDTH/Constants.TILESIZE)):
-                self.TileMap.append(Tiles.Tile(gridPos = (x, y),
-                                    sprite = self.spritesheet.returnSprite(x % 2, y % 2), collision = False))
+                #self.TileMap.append(Tiles.Tile(gridPos = (x, y),
+                #                   sprite = self.spritesheet.returnSprite(x % 2, y % 2), collision = False))
+                self.TileMap.append(Tiles.AnimTile(gridPos = (x, y),
+                                    collision = False,
+                                    SpriteSheet = self.spritesheet,
+                                    row = 0,
+                                    frames = 2,
+                                    interval = 5))
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.SwitchScene(TestScene2(self.WIDTH, self.HEIGHT))
+    def Update(self):
+        for Tiles in self.TileMap:
+            Tiles.Update()
     def Render(self, screen):
         screen.fill((0,0,0))
         for each in self.TileMap:
