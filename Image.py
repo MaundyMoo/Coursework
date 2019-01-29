@@ -1,4 +1,4 @@
-from pygame import image as pyimg
+from pygame import image, transform
 from PIL import Image as Img
 import Constants, os
 def ReadImage(path: str):
@@ -7,7 +7,7 @@ def ReadImage(path: str):
     #Changes the slashes of the path string to all be the same which should
     #prevent any issues finding files
     canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-    image = pyimg.load(path)
+    image = image.load(path)
     return image
 
 class SpriteSheet:
@@ -39,4 +39,9 @@ class SpriteSheet:
             sprites.append(row)
         return sprites
     def  returnSprite(self, x: int, y: int):
-        return self.spriteMap[y][x]
+        return self.ImageToSprite(self.spriteMap[y][x])
+
+    def ImageToSprite(self, sprite):
+        sprite = image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)
+        sprite = transform.scale(sprite, (Constants.TILESIZE, Constants.TILESIZE))
+        return sprite
