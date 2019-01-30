@@ -1,4 +1,4 @@
-import pygame, Image, Tiles, Constants
+import pygame, Image, Tiles, Constants, Entities
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
         self.next = self
@@ -19,10 +19,13 @@ class TestScene(SceneBase):
         super().__init__(WIDTH, HEIGHT)
         self.TileMap = []
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
+        self.player = Entities.Player(x = 1, y = 1, sprite = self.spritesheet.returnSprite(0, 2))
         for y in range(0, int(HEIGHT/Constants.TILESIZE)):
             for x in range(0, int(WIDTH/Constants.TILESIZE)):
-                #self.TileMap.append(Tiles.Tile(gridPos = (x, y),
-                #                   sprite = self.spritesheet.returnSprite(x % 2, y % 2), collision = False))
+                '''
+                self.TileMap.append(Tiles.Tile(gridPos = (x, y),
+                                   sprite = self.spritesheet.returnSprite(0, 0), collision = False))
+                '''
                 self.TileMap.append(Tiles.AnimTile(gridPos = (x, y),
                                     collision = False,
                                     SpriteSheet = self.spritesheet,
@@ -37,7 +40,9 @@ class TestScene(SceneBase):
     def Update(self):
         for Tiles in self.TileMap:
             Tiles.Update()
+        self.player.Update()
     def Render(self, screen):
         screen.fill((0,0,0))
         for each in self.TileMap:
             each.Render(screen)
+        self.player.Render(screen)
