@@ -2,9 +2,10 @@ import Constants, Image
 class Tile:
     def __init__(self, gridPos: tuple, sprite, collision: bool):
         self.sprite = sprite
+        self.collision = collision
         self.x, self.y = gridPos[0], gridPos[1]
     def isCollidable(self) -> bool:
-        return collision
+        return self.collision
     def Update(self):
         pass
     def Render(self, screen):
