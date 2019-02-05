@@ -1,6 +1,6 @@
 import Constants, Image
 class Tile:
-    def __init__(self, gridPos: tuple, sprite, collision: bool):
+    def __init__(self, gridPos: tuple, collision: bool, sprite):
         self.sprite = sprite
         self.collision = collision
         self.x, self.y = gridPos[0], gridPos[1]
