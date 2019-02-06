@@ -1,7 +1,8 @@
 from pygame import image, transform
 from PIL import Image as Img
 import Constants, os
-def ReadImage(path: str):
+#I believe this is obselete now
+def ReadImage(path: str) -> image:
     path = Constants.getPath(path)
     #Boiler plate code
     #Changes the slashes of the path string to all be the same which should

@@ -5,8 +5,8 @@ class Entity:
         self.sprite = sprite
     def Update(self):
         pass
-    def Render(self, screen):
-        screen.blit(self.sprite, (self.x * Constants.TILESIZE, self.y * Constants.TILESIZE))
+    def Render(self, screen, OffsetX: int, OffsetY: int):
+        screen.blit(self.sprite, (self.x * Constants.TILESIZE + OffsetX, self.y * Constants.TILESIZE + OffsetY))
 
 class Player(Entity):
     def __init__(self, x: int, y: int, sprite, map: list):
@@ -25,3 +25,6 @@ class Player(Entity):
         else:
             self.x = self.x + dX
             self.y = self.y + dY
+
+    def getPosition(self) -> tuple:
+        return (self.x, self.y)

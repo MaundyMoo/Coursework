@@ -19,6 +19,7 @@ class TestScene(SceneBase):
         super().__init__(WIDTH, HEIGHT)
         self.TileMap = []
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
+        self.OffsetX, self.OffsetY = 0, 0
         for y in range(0, len(Constants.testmap)):
             row = []
             for x in range(0, len(Constants.testmap[0])):
@@ -39,6 +40,7 @@ class TestScene(SceneBase):
                                               interval=4))
             self.TileMap.append(row)
         self.player = Entities.Player(x = 0, y = 0, sprite = self.spritesheet.returnSprite(0, 2), map = self.TileMap)
+
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -56,9 +58,34 @@ class TestScene(SceneBase):
             for tiles in row:
                 tiles.Update()
         self.player.Update()
+        self.offsetScene()
+
+    def offsetScene(self):
+        #Getting map dimensions, both tile and pixel dimensions
+        #TEMPORY FOR NOW UNTIL MAP GENERATION IS IMPLEMENTED
+        mapHeight, mapWidth = len(Constants.testmap), len(Constants.testmap[0])
+        mapPixelHeight, mapPixelWidth = mapHeight * Constants.TILESIZE, mapWidth * Constants.TILESIZE
+        #Getting the position and pixel position of the player
+        playerX, playerY = self.player.getPosition()
+        playerPixelX, playerPixelY = playerX * Constants.TILESIZE, playerY * Constants.TILESIZE
+        #Checking for X offset
+        if playerPixelX <= int(Constants.SCREEN_WIDTH/2):
+            self.OffsetX = 0
+        elif playerPixelX >= int(mapPixelWidth - int(Constants.SCREEN_WIDTH/2)):
+            self.OffsetX = -int(mapPixelWidth - int(Constants.SCREEN_WIDTH))
+        else:
+            self.OffsetX = -(playerPixelX - int(Constants.SCREEN_WIDTH/2))
+        #Checking for Y offset
+        if playerPixelY <= int(Constants.SCREEN_HEIGHT / 2):
+            self.OffsetY = 0
+        elif playerPixelY >= int(mapPixelHeight - int(Constants.SCREEN_HEIGHT / 2)):
+            self.OffsetY = -int(mapPixelHeight - int(Constants.SCREEN_HEIGHT))
+        else:
+            self.OffsetY = -(playerPixelY - int(Constants.SCREEN_HEIGHT / 2))
+
     def Render(self, screen):
         screen.fill((0,0,0))
         for row in self.TileMap:
             for tiles in row:
-                tiles.Render(screen)
-        self.player.Render(screen)
+                tiles.Render(screen, self.OffsetX, self.OffsetY)
+        self.player.Render(screen, self.OffsetX, self.OffsetY)

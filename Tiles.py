@@ -8,15 +8,16 @@ class Tile:
         return self.collision
     def Update(self):
         pass
-    def Render(self, screen):
-        screen.blit(self.sprite, (self.x * Constants.TILESIZE, self.y * Constants.TILESIZE))
+    def Render(self, screen, OffsetX: int, OffsetY: int):
+        screen.blit(self.sprite, ((self.x * Constants.TILESIZE) + OffsetX, (self.y * Constants.TILESIZE) + OffsetY))
 
 class AnimTile(Tile):
-    def __init__(self, gridPos: tuple, collision: bool, SpriteSheet, row: int, frames: int, interval: int):
+    def __init__(self, gridPos: tuple, collision: bool, SpriteSheet, row: int, frames: int, interval: int, offset: int = 0):
         self.SpriteSheet = SpriteSheet
         self.row = row
         self.frames = frames
         self.interval = interval
+        self.offset = offset
         self.initialSprite = self.SpriteSheet.returnSprite(0, self.row)
         super().__init__(gridPos, self.initialSprite, collision)
         self.tick = 0
@@ -27,4 +28,4 @@ class AnimTile(Tile):
         self.tick += 1
         if self.tick >= self.animLength:
             self.tick = 0
-        self.sprite = self.SpriteSheet.returnSprite(self.tick // self.interval, self.row)
+        self.sprite = self.SpriteSheet.returnSprite((self.tick // self.interval) + self.offset, self.row)

@@ -7,7 +7,7 @@ TILESIZE = 64
 #Gets the directory of where the file is being run from
 WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 #Joins any input path to the working directory
-def getPath(path):
+def getPath(path) -> str:
     return os.path.join(WORKING_DIRECTORY, path)
 
 testmap = [[0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
