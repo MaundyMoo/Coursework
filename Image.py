@@ -1,15 +1,6 @@
 from pygame import image, transform
 from PIL import Image as Img
 import Constants, os
-#I believe this is obselete now
-def ReadImage(path: str) -> image:
-    path = Constants.getPath(path)
-    #Boiler plate code
-    #Changes the slashes of the path string to all be the same which should
-    #prevent any issues finding files
-    canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-    image = image.load(path)
-    return image
 
 class SpriteSheet:
     def __init__(self, path: str, spriteSize: int):

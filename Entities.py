@@ -16,15 +16,14 @@ class Player(Entity):
     def move(self, dX: int, dY: int):
         #Checks for collions at the boundaries of the screen/map
         if self.y + dY < 0 or self.x + dX < 0:
-            print('offscreen UP or LEFT')
+            dX, dY = 0, 0
         elif self.y + dY > (len(self.map)-1) or self.x + dX > (len(self.map[0])-1):
-            print('offscreen DOWN or RIGHT')
+            dX, dY = 0, 0
         #Checks for collisions with tiles that are 'collidable'
         elif self.map[self.y + dY][self.x + dX].isCollidable():
-            print('Collides')
-        else:
-            self.x = self.x + dX
-            self.y = self.y + dY
+            dX, dY = 0, 0
+        self.x = self.x + dX
+        self.y = self.y + dY
 
     def getPosition(self) -> tuple:
         return (self.x, self.y)
