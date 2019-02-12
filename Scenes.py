@@ -37,7 +37,7 @@ class TestScene(SceneBase):
                                               SpriteSheet=self.spritesheet,
                                               row=1,
                                               frames=2,
-                                              interval=4))
+                                              interval=10))
             self.TileMap.append(row)
         self.animTiles = []
         self.backRendered = False
@@ -84,9 +84,6 @@ class TestScene(SceneBase):
             self.OffsetY = -(mapPixelHeight - Constants.SCREEN_HEIGHT)
         else:
             self.OffsetY = -(playerPixelY - int(Constants.SCREEN_HEIGHT / 2))
-            print(playerPixelY, Constants.SCREEN_HEIGHT/2)
-            print(playerPixelX, Constants.SCREEN_WIDTH/2)
-            print(self.OffsetY)
 
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)
