@@ -33,6 +33,7 @@ def run(activeScene, width: int, height: int):
         pygame.display.flip()
         #Keeps the process waiting to ensure the program runs at 60fps
         clock.tick(60)
+        #print('fps: ', clock.get_fps())
     pygame.quit()
 
 if __name__ == "__main__":

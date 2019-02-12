@@ -19,7 +19,7 @@ class AnimTile(Tile):
         self.interval = interval
         self.offset = offset
         self.initialSprite = self.SpriteSheet.returnSprite(0, self.row)
-        super().__init__(gridPos, self.initialSprite, collision)
+        super().__init__(gridPos, collision = collision, sprite = self.initialSprite)
         self.tick = 0
         #The total amount of frames the animation runs for
         self.animLength = frames * interval

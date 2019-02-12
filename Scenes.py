@@ -33,32 +33,34 @@ class TestScene(SceneBase):
                                               sprite=self.spritesheet.returnSprite(1, 0)))
                 elif Constants.testmap[y][x] == 2:
                     row.append(Tiles.AnimTile(gridPos=(x, y),
-                                              collision=False,
+                                              collision=True,
                                               SpriteSheet=self.spritesheet,
                                               row=1,
                                               frames=2,
                                               interval=4))
             self.TileMap.append(row)
+        self.animTiles = []
+        self.backRendered = False
+        self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
         self.player = Entities.Player(x = 0, y = 0, sprite = self.spritesheet.returnSprite(0, 2), map = self.TileMap)
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+            if event.type == pygame.KEYDOWN and event.key in self.playerInputs:
+                if event.key == self.playerInputs[0]:
                     self.player.move(0, -1)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == self.playerInputs[1]:
                     self.player.move(0, 1)
-                elif event.key == pygame.K_LEFT:
+                elif event.key == self.playerInputs[2]:
                     self.player.move(-1, 0)
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == self.playerInputs[3]:
                     self.player.move(1, 0)
+                self.offsetScene()
+                self.backRendered = False
 
     def Update(self):
-        for row in self.TileMap:
-            for tiles in row:
-                tiles.Update()
+        for tiles in self.animTiles: tiles.Update()
         self.player.Update()
-        self.offsetScene()
 
     def offsetScene(self):
         #Getting map dimensions, both tile and pixel dimensions
@@ -69,23 +71,34 @@ class TestScene(SceneBase):
         playerX, playerY = self.player.getPosition()
         playerPixelX, playerPixelY = playerX * Constants.TILESIZE, playerY * Constants.TILESIZE
         #Checking for X offset
-        if playerPixelX <= int(Constants.SCREEN_WIDTH/2):
+        if playerPixelX <= int(Constants.SCREEN_WIDTH / 2):
             self.OffsetX = 0
-        elif playerPixelX >= int(mapPixelWidth - int(Constants.SCREEN_WIDTH/2)):
-            self.OffsetX = -int(mapPixelWidth - int(Constants.SCREEN_WIDTH))
+        elif playerPixelX >= (mapPixelWidth - int(Constants.SCREEN_WIDTH / 2)):
+            self.OffsetX = -(mapPixelWidth - Constants.SCREEN_WIDTH)
         else:
-            self.OffsetX = -(playerPixelX - int(Constants.SCREEN_WIDTH/2))
+            self.OffsetX = -(playerPixelX - int(Constants.SCREEN_WIDTH / 2))
         #Checking for Y offset
         if playerPixelY <= int(Constants.SCREEN_HEIGHT / 2):
             self.OffsetY = 0
-        elif playerPixelY >= int(mapPixelHeight - int(Constants.SCREEN_HEIGHT / 2)):
-            self.OffsetY = -int(mapPixelHeight - int(Constants.SCREEN_HEIGHT))
+        elif playerPixelY >= (mapPixelHeight - int(Constants.SCREEN_HEIGHT / 2)):
+            self.OffsetY = -(mapPixelHeight - Constants.SCREEN_HEIGHT)
         else:
             self.OffsetY = -(playerPixelY - int(Constants.SCREEN_HEIGHT / 2))
+            print(playerPixelY, Constants.SCREEN_HEIGHT/2)
+            print(playerPixelX, Constants.SCREEN_WIDTH/2)
+            print(self.OffsetY)
 
     def Render(self, screen):
-        screen.fill((0,0,0))
-        for row in self.TileMap:
-            for tiles in row:
-                tiles.Render(screen, self.OffsetX, self.OffsetY)
+        if not self.backRendered: self.backRender(screen)
+        for tiles in self.animTiles: tiles.Render(screen, self.OffsetX, self.OffsetY)
         self.player.Render(screen, self.OffsetX, self.OffsetY)
+
+    def backRender(self, screen):
+        tileXStart = abs(int(self.OffsetX/Constants.TILESIZE))
+        tileYStart = abs(int(self.OffsetY/Constants.TILESIZE))
+        self.animTiles = []
+        for y in range(tileYStart, tileYStart + int(Constants.SCREEN_HEIGHT/Constants.TILESIZE)):
+            for x in range(tileXStart, tileXStart + int(Constants.SCREEN_WIDTH/Constants.TILESIZE)):
+                if type(self.TileMap[y][x]) == Tiles.AnimTile: self.animTiles.append(self.TileMap[y][x])
+                self.TileMap[y][x].Render(screen, self.OffsetX, self.OffsetY)
+        self.backRendered = True
