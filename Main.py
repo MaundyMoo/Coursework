@@ -4,6 +4,7 @@ def run(activeScene, width: int, height: int):
     pygame.display.set_caption("Coursework")
     #Creates a clock object that will handle the frames per second
     clock = pygame.time.Clock()
+    FULLSCREEN = False
     while activeScene is not None:
         pressedKeys = pygame.key.get_pressed()
         #Event filtering - Detects if user wants to close the game, otherwise sends inputs to be handled by scene
@@ -17,6 +18,13 @@ def run(activeScene, width: int, height: int):
                 alt_pressed = pressedKeys[pygame.K_LALT] or pressedKeys[pygame.K_RALT]
                 if event.key == pygame.K_F4 and alt_pressed:
                     quit_attempt = True
+                elif (event.key == pygame.K_RETURN and alt_pressed) or event.key == pygame.K_F11:
+                    FULLSCREEN = not FULLSCREEN
+                    if FULLSCREEN:
+                        pygame.display.set_mode((width, height), pygame.FULLSCREEN)
+                    else:
+                        pygame.display.set_mode((width, height))
+                    activeScene.backRendered = False
             if quit_attempt:
                 activeScene.Terminate()
             else:
@@ -33,7 +41,7 @@ def run(activeScene, width: int, height: int):
         pygame.display.flip()
         #Keeps the process waiting to ensure the program runs at 60fps
         clock.tick(60)
-        print('fps: ', clock.get_fps())
+        #print('fps: ', clock.get_fps())
     pygame.quit()
 
 if __name__ == "__main__":
