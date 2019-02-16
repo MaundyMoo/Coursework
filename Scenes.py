@@ -76,14 +76,14 @@ class TestScene(SceneBase):
         elif playerPixelX >= (mapPixelWidth - int(Constants.SCREEN_WIDTH / 2)):
             self.OffsetX = -(mapPixelWidth - Constants.SCREEN_WIDTH)
         else:
-            self.OffsetX = -(playerPixelX - int(Constants.SCREEN_WIDTH / 2))
+            self.OffsetX = -int(((playerPixelX - int(Constants.SCREEN_WIDTH / 2)) / Constants.TILESIZE) + 1) * (Constants.TILESIZE)
         #Checking for Y offset
         if playerPixelY <= int(Constants.SCREEN_HEIGHT / 2):
             self.OffsetY = 0
         elif playerPixelY >= (mapPixelHeight - int(Constants.SCREEN_HEIGHT / 2)):
             self.OffsetY = -(mapPixelHeight - Constants.SCREEN_HEIGHT)
         else:
-            self.OffsetY = -(playerPixelY - int(Constants.SCREEN_HEIGHT / 2))
+            self.OffsetY = -int(((playerPixelY - int(Constants.SCREEN_HEIGHT / 2)) / Constants.TILESIZE) + 1) * (Constants.TILESIZE)
 
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)
