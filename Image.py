@@ -3,7 +3,7 @@ from PIL import Image as Img
 import Constants, os
 
 class SpriteSheet:
-    def __init__(self, path: str, spriteSize: int):
+    def __init__(self, path: str, spriteSize: int = Constants.TILESIZE):
         self.spriteSize = spriteSize
         path = Constants.getPath(path)
         #Open as an image to allow for cropping and selecting individual parts of it later
@@ -50,3 +50,6 @@ class SpriteSheet:
         sprite = image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)
         sprite = transform.scale(sprite, (Constants.TILESIZE, Constants.TILESIZE))
         return sprite
+
+    def returnSize(self) -> tuple:
+        return self.sheet.size

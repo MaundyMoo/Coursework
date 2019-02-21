@@ -42,7 +42,7 @@ class TestScene(SceneBase):
         self.animTiles = []
         self.backRendered = False
         self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
-        self.player = Entities.Player(x = 0, y = 0, sprite = self.spritesheet.returnSprite(0, 2), map = self.TileMap)
+        self.player = Entities.Player(x = 0, y = 0, map = self.TileMap)
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
@@ -88,6 +88,7 @@ class TestScene(SceneBase):
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)
         for tiles in self.animTiles: tiles.Render(screen, self.OffsetX, self.OffsetY)
+        self.TileMap[self.player.getPosition()[1]][self.player.getPosition()[0]].Render(screen, self.OffsetX, self.OffsetY)
         self.player.Render(screen, self.OffsetX, self.OffsetY)
 
     def backRender(self, screen):
