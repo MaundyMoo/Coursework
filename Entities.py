@@ -34,7 +34,14 @@ class Entity:
         if self.tick > self.animLength:
             self.tick = 0
         self.sprite = self.spritesheet.returnSprite(self.tick // self.interval, self.row)
+        self.sprite = pygame.transform.flip(self.sprite, self.flipped, False)
 
+    def setDirection(self, dir: int, flip: bool = False):
+        if dir < (self.spritesheet.returnSize()[1]/self.size):
+            self.row = dir
+            self.flipped = flip
+        else:
+            print('Error, invalid direction')
 
 class Player(Entity):
     def __init__(self, x: int, y: int, map: list):

@@ -47,14 +47,23 @@ class TestScene(SceneBase):
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key in self.playerInputs:
+                #self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
+                #UP
                 if event.key == self.playerInputs[0]:
                     self.player.move(0, -1)
+                    self.player.setDirection(0)
+                #DOWN
                 elif event.key == self.playerInputs[1]:
                     self.player.move(0, 1)
+                    self.player.setDirection(1)
+                #LEFT
                 elif event.key == self.playerInputs[2]:
                     self.player.move(-1, 0)
+                    self.player.setDirection(2)
+                #RIGHT
                 elif event.key == self.playerInputs[3]:
                     self.player.move(1, 0)
+                    self.player.setDirection(2, True)
                 self.offsetScene()
                 self.backRendered = False
 
