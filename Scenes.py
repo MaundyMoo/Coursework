@@ -14,7 +14,7 @@ class SceneBase:
     def Terminate(self):
         self.SwitchScene(None)
 
-class TestScene(SceneBase):
+class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
         self.TileMap = []
