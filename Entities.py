@@ -67,3 +67,19 @@ class Player(Entity):
 
     def getPosition(self) -> tuple:
         return (self.x, self.y)
+
+class Enemy(Entity):
+    def __init__(self, x, y, spritesheet, spriteSize, map, interval, animRow):
+        super().__init__(x, y, spritesheet, spriteSize, interval)
+        self.row = animRow
+        self.map = map
+
+class TestEnemy(Enemy):
+    def __init__(self, x: int, y: int, Map: list):
+        # Attributes necessary for animations
+        spritesheetPath = 'res/enemySheet.png'
+        size = 32
+        interval = 10
+        frames = 10
+        animRow = 0
+        super().__init__(x, y, spritesheetPath, spriteSize, Map, interval, animRow)
