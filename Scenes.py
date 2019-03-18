@@ -71,8 +71,10 @@ class GameScene(SceneBase):
     def Update(self):
         for tiles in self.animTiles: tiles.Update()
         self.player.Update()
+        if self.player.isDead: self.Terminate()
         for entity in self.Entities:
             entity.Update()
+            if entity.isDead: self.Entities.remove(entity)
 
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)

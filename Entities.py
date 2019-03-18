@@ -53,6 +53,16 @@ class Player(Entity):
         super().__init__(x, y, spritesheetPath, size, interval)
         self.map = map
 
+        self.maxHealth = 10
+        self.currentHealth = self.maxHealth
+        self.isDead = False
+        self.attack = 3
+
+    def Update(self):
+        super().Update()
+        if self.currentHealth <= 0:
+            self.isDead = True
+
     def move(self, dX: int, dY: int):
         #Checks for collions at the boundaries of the screen/map
         if self.y + dY < 0 or self.x + dX < 0:
@@ -74,6 +84,13 @@ class Enemy(Entity):
         self.row = animRow
         self.map = map
 
+        self.isDead = False
+
+    def Update(self):
+        super().Update()
+        if self.currentHealth <= 0:
+            self.isDead = True
+
     def getPosition(self) -> tuple:
         return (self.x, self.y)
 
@@ -86,3 +103,7 @@ class TestEnemy(Enemy):
         frames = 10
         animRow = 0
         super().__init__(x, y, spritesheetPath, spriteSize, Map, interval, animRow)
+
+        self.maxHealth = 10
+        self.currentHealth = self.maxHealth
+        self.attack = 3
