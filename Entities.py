@@ -31,7 +31,7 @@ class Entity:
 
     def animate(self):
         self.tick += 1
-        if self.tick > self.animLength:
+        if self.tick >= self.animLength:
             self.tick = 0
         self.sprite = self.spritesheet.returnSprite(self.tick // self.interval, self.row)
         self.sprite = pygame.transform.flip(self.sprite, self.flipped, False)
@@ -74,11 +74,14 @@ class Enemy(Entity):
         self.row = animRow
         self.map = map
 
+    def getPosition(self) -> tuple:
+        return (self.x, self.y)
+
 class TestEnemy(Enemy):
     def __init__(self, x: int, y: int, Map: list):
         # Attributes necessary for animations
         spritesheetPath = 'res/enemySheet.png'
-        size = 32
+        spriteSize = 32
         interval = 10
         frames = 10
         animRow = 0

@@ -43,6 +43,7 @@ class GameScene(SceneBase):
         self.backRendered = False
         self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
         self.player = Entities.Player(x = 0, y = 0, map = self.TileMap)
+        self.Entities = [Entities.TestEnemy(x = 5, y = 5, Map = self.TileMap)]
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
@@ -70,6 +71,17 @@ class GameScene(SceneBase):
     def Update(self):
         for tiles in self.animTiles: tiles.Update()
         self.player.Update()
+        for entity in self.Entities:
+            entity.Update()
+
+    def Render(self, screen):
+        if not self.backRendered: self.backRender(screen)
+        for tiles in self.animTiles: tiles.Render(screen, self.OffsetX, self.OffsetY)
+        self.TileMap[self.player.getPosition()[1]][self.player.getPosition()[0]].Render(screen, self.OffsetX, self.OffsetY)
+        self.player.Render(screen, self.OffsetX, self.OffsetY)
+        for entity in self.Entities:
+            self.TileMap[entity.getPosition()[1]][entity.getPosition()[0]].Render(screen, self.OffsetX, self.OffsetY)
+            entity.Render(screen, self.OffsetX, self.OffsetY)
 
     def offsetScene(self):
         #Getting map dimensions, both tile and pixel dimensions
@@ -93,12 +105,6 @@ class GameScene(SceneBase):
             self.OffsetY = -(mapPixelHeight - Constants.SCREEN_HEIGHT)
         else:
             self.OffsetY = -int(((playerPixelY - int(Constants.SCREEN_HEIGHT / 2)) / Constants.TILESIZE) + 1) * (Constants.TILESIZE)
-
-    def Render(self, screen):
-        if not self.backRendered: self.backRender(screen)
-        for tiles in self.animTiles: tiles.Render(screen, self.OffsetX, self.OffsetY)
-        self.TileMap[self.player.getPosition()[1]][self.player.getPosition()[0]].Render(screen, self.OffsetX, self.OffsetY)
-        self.player.Render(screen, self.OffsetX, self.OffsetY)
 
     def backRender(self, screen):
         tileXStart = abs(int(self.OffsetX/Constants.TILESIZE))
