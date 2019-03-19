@@ -63,7 +63,7 @@ class Player(Entity):
         if self.currentHealth <= 0:
             self.isDead = True
 
-    def move(self, dX: int, dY: int):
+    def move(self, dX: int, dY: int, entities: list):
         #Checks for collions at the boundaries of the screen/map
         if self.y + dY < 0 or self.x + dX < 0:
             dX, dY = 0, 0
@@ -72,8 +72,21 @@ class Player(Entity):
         #Checks for collisions with tiles that are 'collidable'
         elif self.map[self.y + dY][self.x + dX].isCollidable():
             dX, dY = 0, 0
+        #Checks for collisions with any entities
+        else:
+            for entity in entities:
+                if (self.x + dX, self.y + dY) == entity.getPosition() and issubclass(type(entity), Enemy):
+                    dX, dY = 0, 0
+                    self.combat(entity)
         self.x = self.x + dX
         self.y = self.y + dY
+
+    def combat(self, enemy):
+        if enemy.currentHealth < self.attack:
+            enemy.die()
+        else:
+            enemy.currentHealth -= self.attack
+            self.currentHealth -= enemy.attack
 
     def getPosition(self) -> tuple:
         return (self.x, self.y)
@@ -85,11 +98,16 @@ class Enemy(Entity):
         self.map = map
 
         self.isDead = False
+        self.currentHealth: int
+        self.maxHealth: int
 
     def Update(self):
         super().Update()
         if self.currentHealth <= 0:
             self.isDead = True
+
+    def die(self):
+        self.isDead = True
 
     def getPosition(self) -> tuple:
         return (self.x, self.y)
