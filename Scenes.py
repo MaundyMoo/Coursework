@@ -94,12 +94,12 @@ class GameScene(SceneBase):
         playerX, playerY = self.player.getPosition()
         playerPixelX, playerPixelY = playerX * Constants.TILESIZE, playerY * Constants.TILESIZE
         #Checking for X offset
-        if playerPixelX <= int(Constants.SCREEN_WIDTH / 2):
+        if playerPixelX <= int(Constants.GAME_WIDTH / 2):
             self.OffsetX = 0
-        elif playerPixelX >= (mapPixelWidth - int(Constants.SCREEN_WIDTH / 2)):
-            self.OffsetX = -(mapPixelWidth - Constants.SCREEN_WIDTH)
+        elif playerPixelX >= (mapPixelWidth - int(Constants.GAME_WIDTH / 2)):
+            self.OffsetX = -(mapPixelWidth - Constants.GAME_WIDTH)
         else:
-            self.OffsetX = -int(((playerPixelX - int(Constants.SCREEN_WIDTH / 2)) / Constants.TILESIZE) + 1) * (Constants.TILESIZE)
+            self.OffsetX = -int(((playerPixelX - int(Constants.GAME_WIDTH / 2)) / Constants.TILESIZE) + 1) * (Constants.TILESIZE)
         #Checking for Y offset
         if playerPixelY <= int(Constants.SCREEN_HEIGHT / 2):
             self.OffsetY = 0
@@ -113,7 +113,7 @@ class GameScene(SceneBase):
         tileYStart = abs(int(self.OffsetY/Constants.TILESIZE))
         self.animTiles = []
         for y in range(tileYStart, tileYStart + int(Constants.SCREEN_HEIGHT/Constants.TILESIZE)):
-            for x in range(tileXStart, tileXStart + int(Constants.SCREEN_WIDTH/Constants.TILESIZE)):
+            for x in range(tileXStart, tileXStart + int(Constants.GAME_WIDTH/Constants.TILESIZE)):
                 if type(self.TileMap[y][x]) == Tiles.AnimTile: self.animTiles.append(self.TileMap[y][x])
                 self.TileMap[y][x].Render(screen, self.OffsetX, self.OffsetY)
         self.backRendered = True
