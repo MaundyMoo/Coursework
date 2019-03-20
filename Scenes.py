@@ -18,6 +18,7 @@ class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
         self.TileMap = []
+
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
         self.OffsetX, self.OffsetY = 0, 0
         for y in range(0, len(Constants.testmap)):

@@ -12,6 +12,8 @@ class Logger:
         self.playerMaxHealth: int = 1
         self.playerHealth: int = 1
 
+        self.log = []
+
         #Attributes for the health bar
         self.Font = pygame.font.SysFont("Impact", 20)
         self.textOffset = 5
@@ -28,7 +30,6 @@ class Logger:
     def Render(self, screen):
         #draw.rect(screen, (r,g,b), (posX, posY, width, height))
         pygame.draw.rect(screen, (100,100,100), (self.position, 0, self.width, self.height))
-        pygame.draw.rect(screen, (0, 0, 0), (self.position, self.Font.get_height() * self.logAmount + self.textOffset, self.width, 4))
         # Draws three rectangles for the health bar, Health bar in green, back in red, and border in black
         # Border
         pygame.draw.rect(screen, (0, 0, 0), (self.position + self.healthX - self.healthOffset / 2, self.healthY - self.healthOffset / 2,
@@ -43,22 +44,23 @@ class Logger:
         screen.blit(healthText, (self.position + self.healthX + self.healthBarWidth / 2 - healthText.get_width() / 2,
                                  self.healthY - self.healthOffset / 4))
 
-
-        '''
         #Log
         for i in range(0, len(self.log)):
             screen.blit(self.log[i], (self.position + 5, self.Font.get_height() * i + self.textOffset))
-        '''
-    #How do I actually want to log events, parse the string in or parse the action and let the method handle creating a string
+
+        #pygame.draw.rect(screen, (0, 0, 0), (self.position, self.Font.get_height() * self.logAmount + self.textOffset, self.width, 4))
+
     def logDeath(self, entity: str):
-        msg = entity + ' was killed.'
+        msg = str(entity) + ' was killed.'
         pygMsg = self.Font.render(msg, True, (0, 0, 0))
         self.log.append(pygMsg)
-    def logCombat(self, Attacker: str, Defender: str, damage: int):
-        msg = Attacker + ' hit ' + Defender + ' for ' + str(damage) + '.'
+
+    def logCombat(self, attacker: str, defender: str, damage: int):
+        msg = str(attacker) + ' hit ' + str(defender) + ' for ' + str(damage) + '.'
         pygMsg = self.Font.render(msg, True, (0,0,0))
         self.log.append(pygMsg)
-    def logDamage(self, player: str, Damage: int):
-        msg = player + ' took ' + str(Damage) + ' damage.'
+
+    def logDamage(self, entity: str, Damage: int):
+        msg = str(entity) + ' took ' + str(Damage) + ' damage.'
         pygMsg = self.Font.render(msg, True, (0, 0, 0))
         self.log.append(pygMsg)

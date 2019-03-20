@@ -2,7 +2,7 @@ import Constants, pygame, Image, Logger
 class Entity:
     def __init__(self, x: int, y: int, spriteSheet: str, spriteSize: int, interval: int):
         self.x, self.y = x, y
-
+        self.name: str
         #Animation Attributes
             #Size represents the size of the spritesheets sprites not the sprites ingame
         self.size = spriteSize
@@ -22,6 +22,9 @@ class Entity:
         self.tick = 0
             #A default sprite so the program has something to render on the first frame
         self.sprite = self.spritesheet.returnSprite(0, self.row)
+
+    def __str__(self):
+        return self.name
 
     def Update(self):
         self.animate()
@@ -53,18 +56,19 @@ class Player(Entity):
         super().__init__(x, y, spritesheetPath, size, interval)
         self.map = map
 
+        self.logger = Logger.Logger(Constants.GAME_WIDTH, Constants.LOG_WIDTH, Constants.SCREEN_HEIGHT)
+
         self.maxHealth = 10
         self.currentHealth = self.maxHealth
         self.isDead = False
         self.attack = 3
-
-        self.logger = Logger.Logger(Constants.GAME_WIDTH, Constants.LOG_WIDTH, Constants.SCREEN_HEIGHT)
+        self.name = 'Player'
 
     def Update(self):
         super().Update()
-        self.logger.Update(self.currentHealth, self.maxHealth)
         if self.currentHealth <= 0:
             self.isDead = True
+        self.logger.Update(self.currentHealth, self.maxHealth)
 
     def Render(self, screen, OffsetX, OffsetY):
         super().Render(screen, OffsetX, OffsetY)
@@ -91,9 +95,13 @@ class Player(Entity):
     def combat(self, enemy):
         if enemy.currentHealth < self.attack:
             enemy.die()
+            self.logger.logCombat(attacker = self, defender = enemy, damage = self.attack)
+            self.logger.logDeath(enemy)
         else:
             enemy.currentHealth -= self.attack
+            self.logger.logCombat(attacker = self, defender = enemy, damage = self.attack)
             self.currentHealth -= enemy.attack
+            self.logger.logCombat(attacker = enemy, defender = self, damage = enemy.attack)
 
     def getPosition(self) -> tuple:
         return (self.x, self.y)
@@ -132,3 +140,4 @@ class TestEnemy(Enemy):
         self.maxHealth = 10
         self.currentHealth = self.maxHealth
         self.attack = 3
+        self.name = 'test'
