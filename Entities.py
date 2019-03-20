@@ -1,4 +1,4 @@
-import Constants, pygame, Image
+import Constants, pygame, Image, Logger
 class Entity:
     def __init__(self, x: int, y: int, spriteSheet: str, spriteSize: int, interval: int):
         self.x, self.y = x, y
@@ -58,10 +58,17 @@ class Player(Entity):
         self.isDead = False
         self.attack = 3
 
+        self.logger = Logger.Logger(Constants.GAME_WIDTH, Constants.LOG_WIDTH, Constants.SCREEN_HEIGHT)
+
     def Update(self):
         super().Update()
+        self.logger.Update(self.currentHealth, self.maxHealth)
         if self.currentHealth <= 0:
             self.isDead = True
+
+    def Render(self, screen, OffsetX, OffsetY):
+        super().Render(screen, OffsetX, OffsetY)
+        self.logger.Render(screen)
 
     def move(self, dX: int, dY: int, entities: list):
         #Checks for collions at the boundaries of the screen/map
