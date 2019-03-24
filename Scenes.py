@@ -44,7 +44,12 @@ class GameScene(SceneBase):
         self.backRendered = False
         self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
         self.player = Entities.Player(x = 0, y = 0, map = self.TileMap)
-        self.Entities = [Entities.TestEnemy(x = 5, y = 5, Map = self.TileMap)]
+        self.Entities = [Entities.TestEnemy(x = 5, y = 5, Map = self.TileMap),
+                         Entities.TestEnemy(x = 4, y = 5, Map = self.TileMap),
+                         Entities.TestEnemy(x = 3, y = 5, Map = self.TileMap),
+                         Entities.TestEnemy(x = 2, y = 5, Map = self.TileMap),
+                         Entities.TestEnemy(x = 1, y = 5, Map = self.TileMap),
+                         Entities.TestEnemy(x = 0, y = 5, Map = self.TileMap)]
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:

@@ -58,7 +58,7 @@ class Player(Entity):
 
         self.logger = Logger.Logger(Constants.GAME_WIDTH, Constants.LOG_WIDTH, Constants.SCREEN_HEIGHT)
 
-        self.maxHealth = 10
+        self.maxHealth = 100
         self.currentHealth = self.maxHealth
         self.isDead = False
         self.attack = 3

@@ -12,20 +12,23 @@ class Logger:
         self.playerMaxHealth: int = 1
         self.playerHealth: int = 1
 
-        self.log = []
+        self.log: list = []
+        self.logLength: int = 20
 
         #Attributes for the health bar
         self.Font = pygame.font.SysFont("Impact", 20)
-        self.textOffset = 5
-        self.healthX = 10
-        self.healthBarWidth = self.width - self.healthX * 2
-        self.healthBarHeight = 20
-        self.healthY = self.height - self.healthBarHeight * 2
-        self.healthOffset = 10
+        self.textOffset: int = 5
+        self.healthX: int = 10
+        self.healthBarWidth: int = self.width - self.healthX * 2
+        self.healthBarHeight: int = 20
+        self.healthY: int = self.height - self.healthBarHeight * 2
+        self.healthOffset: int = 10
 
     def Update(self, playerHealth: int, playerMaxHealth: int):
         self.playerHealth = playerHealth
         self.playerMaxHealth = playerMaxHealth
+        while len(self.log) > self.logLength:
+            self.log.pop(0)
 
     def Render(self, screen):
         #draw.rect(screen, (r,g,b), (posX, posY, width, height))
