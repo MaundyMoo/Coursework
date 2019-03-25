@@ -13,7 +13,7 @@ class Logger:
         self.playerHealth: int = 1
 
         self.log: list = []
-        self.logLength: int = 20
+        self.logLength: int = 15
 
         #Attributes for the health bar
         self.Font = pygame.font.SysFont("Impact", 20)
@@ -33,6 +33,7 @@ class Logger:
     def Render(self, screen):
         #draw.rect(screen, (r,g,b), (posX, posY, width, height))
         pygame.draw.rect(screen, (100,100,100), (self.position, 0, self.width, self.height))
+        pygame.draw.rect(screen, (0, 0, 0), (self.position, self.Font.get_height() * self.logLength + self.textOffset, self.width, 4))
         # Draws three rectangles for the health bar, Health bar in green, back in red, and border in black
         # Border
         pygame.draw.rect(screen, (0, 0, 0), (self.position + self.healthX - self.healthOffset / 2, self.healthY - self.healthOffset / 2,
