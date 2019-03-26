@@ -1,3 +1,4 @@
+import math
 class Graph:
     def __init__(self, map: list):
         #Holds the map, will be used for height / width and potentially cost of tiles
@@ -22,17 +23,20 @@ class Graph:
                 result.append([vertex[0] + dir[0], vertex[1] + dir[1]])
         return tuple(result)
 
+    # Calculates the Manhattan distance
+    def heuristic(self, source, target):
+        y1, x1 = source
+        y2, x2 = target
+        return abs(x1 - x2) + abs(y1 - y2)
 
-
-
-
-
-
+    def Astar(self):
+        pass
 
 test = [['.', '.', '.'],
         ['.', '.', '.'],
         ['.', '.', '.'],
         ['.', '.', '.']]
+
 testg = Graph(test)
 testg.generateGraph(test)
 for each in testg.edges:
