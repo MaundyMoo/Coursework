@@ -46,6 +46,9 @@ class Entity:
         else:
             print('Error, invalid direction')
 
+    def getPosition(self) -> tuple:
+        return (self.y, self.x)
+
 class Player(Entity):
     def __init__(self, x: int, y: int, map: list):
         #Attributes necessary for animations
@@ -86,7 +89,7 @@ class Player(Entity):
         #Checks for collisions with any entities
         else:
             for entity in entities:
-                if (self.x + dX, self.y + dY) == entity.getPosition() and issubclass(type(entity), Enemy):
+                if (self.y + dY, self.x + dX) == entity.getPosition() and issubclass(type(entity), Enemy):
                     dX, dY = 0, 0
                     self.combat(entity)
         self.x = self.x + dX
@@ -103,9 +106,6 @@ class Player(Entity):
             self.currentHealth -= enemy.attack
             self.logger.logCombat(attacker = enemy, defender = self, damage = enemy.attack)
 
-    def getPosition(self) -> tuple:
-        return (self.x, self.y)
-
 class Enemy(Entity):
     def __init__(self, x, y, spritesheet, spriteSize, map, interval, animRow):
         super().__init__(x, y, spritesheet, spriteSize, interval)
@@ -121,11 +121,19 @@ class Enemy(Entity):
         if self.currentHealth <= 0:
             self.isDead = True
 
+    def move(self, path, entities: list, player):
+        positions = []
+        if not path[0] == player.getPosition():
+            for entity in entities:
+                positions.append(entity.getPosition())
+            if not path[0] in positions:
+                self.y, self.x = path[0]
+
+    def combat(self, entity):
+        pass
+
     def die(self):
         self.isDead = True
-
-    def getPosition(self) -> tuple:
-        return (self.x, self.y)
 
 class TestEnemy(Enemy):
     def __init__(self, x: int, y: int, Map: list):

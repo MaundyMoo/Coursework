@@ -6,12 +6,14 @@ class Graph:
         self.map = map
         #A dictionary that holds the edges for each given vertex / point on the map
         self.edges: dict = {}
+        self.generateGraph(self.map)
 
     #Loops through the map and adds the neighbours the to the respective key / vertex
     def generateGraph(self, map):
         for y in range(0, len(map)):
             for x in range(0, len(map[0])):
-                self.edges[(y,x)] = self.neighbours([y,x])
+                if not map[y][x].isCollidable():
+                    self.edges[(y,x)] = self.neighbours([y,x])
 
     #Returns the neighbours of a given vertex (in 4 directions)
     def neighbours(self, vertex: list) -> list:
@@ -21,7 +23,8 @@ class Graph:
             neighbour = [vertex[0] + dir[0], vertex[1] + dir[1]]
             # Bounds the edges to within the map
             if 0 <= neighbour[0] < len(self.map) and 0 <= neighbour[1] < len(self.map[0]):
-                result.append((vertex[0] + dir[0], vertex[1] + dir[1]))
+                if not self.map[vertex[0] + dir[0]][vertex[1] + dir[1]].isCollidable():
+                    result.append((vertex[0] + dir[0], vertex[1] + dir[1]))
         return tuple(result)
 
     # Calculates the Manhattan distance
@@ -70,12 +73,12 @@ class Graph:
         while current != source:
             path.append(current)
             current = came_from[current]
-        # Optional adding source to path
-        path.append(source)
         # Path is constructed backwards
         path.reverse()
         return path
 
+
+'''
 test = [['.', '.', '.'],
         ['.', '.', '.'],
         ['.', '.', '.'],
@@ -85,13 +88,13 @@ testg = Graph(test)
 testg.generateGraph(test)
 for each in testg.edges:
     print(each, ':', testg.edges[each])
-'''
+    
 print("////////////")
 print(testg.edges[(0,0)])
 print("////////////")
 for next in testg.edges[(0,0)]:
     print(next)
-'''
 print('-_'*100)
 x = testg.Astar((0,0), (3,2))
 print(x)
+'''

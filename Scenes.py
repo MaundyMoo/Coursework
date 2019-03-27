@@ -1,4 +1,4 @@
-import pygame, Image, Tiles, Constants, Entities
+import pygame, Image, Tiles, Constants, Entities, Pathfinding
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
         self.next = self
@@ -50,6 +50,7 @@ class GameScene(SceneBase):
                          Entities.TestEnemy(x = 2, y = 5, Map = self.TileMap),
                          Entities.TestEnemy(x = 1, y = 5, Map = self.TileMap),
                          Entities.TestEnemy(x = 0, y = 5, Map = self.TileMap)]
+        self.graph = Pathfinding.Graph(self.TileMap)
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
@@ -71,6 +72,9 @@ class GameScene(SceneBase):
                 elif event.key == self.playerInputs[3]:
                     self.player.move(1, 0, self.Entities)
                     self.player.setDirection(2, True)
+                for entity in self.Entities:
+                    path = self.graph.Astar(source = entity.getPosition(), target = self.player.getPosition())
+                    entity.move(path, self.Entities, self.player)
                 self.offsetScene()
                 self.backRendered = False
 
@@ -85,10 +89,10 @@ class GameScene(SceneBase):
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)
         for tiles in self.animTiles: tiles.Render(screen, self.OffsetX, self.OffsetY)
-        self.TileMap[self.player.getPosition()[1]][self.player.getPosition()[0]].Render(screen, self.OffsetX, self.OffsetY)
+        self.TileMap[self.player.getPosition()[0]][self.player.getPosition()[1]].Render(screen, self.OffsetX, self.OffsetY)
         self.player.Render(screen, self.OffsetX, self.OffsetY)
         for entity in self.Entities:
-            self.TileMap[entity.getPosition()[1]][entity.getPosition()[0]].Render(screen, self.OffsetX, self.OffsetY)
+            self.TileMap[entity.getPosition()[0]][entity.getPosition()[1]].Render(screen, self.OffsetX, self.OffsetY)
             entity.Render(screen, self.OffsetX, self.OffsetY)
 
     def offsetScene(self):
@@ -97,7 +101,7 @@ class GameScene(SceneBase):
         mapHeight, mapWidth = len(Constants.testmap), len(Constants.testmap[0])
         mapPixelHeight, mapPixelWidth = mapHeight * Constants.TILESIZE, mapWidth * Constants.TILESIZE
         #Getting the position and pixel position of the player
-        playerX, playerY = self.player.getPosition()
+        playerY, playerX = self.player.getPosition()
         playerPixelX, playerPixelY = playerX * Constants.TILESIZE, playerY * Constants.TILESIZE
         #Checking for X offset
         if playerPixelX <= int(Constants.GAME_WIDTH / 2):
