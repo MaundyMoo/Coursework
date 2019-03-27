@@ -61,9 +61,20 @@ class Graph:
                     priority = new_cost + self.heuristic(target, next)
                     frontier.put(next, priority)
                     came_from[next] = current
+        return self.constructPath(came_from, source, target)
 
-    def constructPath(self, paths):
-        pass
+    def constructPath(self, came_from, source, target):
+        current = target
+        path = []
+        # Once current is source the path has been reconstructed
+        while current != source:
+            path.append(current)
+            current = came_from[current]
+        # Optional adding source to path
+        path.append(source)
+        # Path is constructed backwards
+        path.reverse()
+        return path
 
 test = [['.', '.', '.'],
         ['.', '.', '.'],
