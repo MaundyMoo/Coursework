@@ -77,6 +77,8 @@ class Graph:
         path.reverse()
         return path
 
+    def getCost(self, current, next):
+        return abs(current[0] - next[0]) + abs(current[1] + next[1])
 
 '''
 test = [['.', '.', '.'],
