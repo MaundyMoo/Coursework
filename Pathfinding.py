@@ -1,4 +1,3 @@
-import math
 from queue import PriorityQueue
 class Graph:
     def __init__(self, map: list):
@@ -54,10 +53,10 @@ class Graph:
                 break
 
             for next in self.edges[current]:
-                #No cost associated with tiles yet, to be implemented
+                # No cost associated with tiles yet, to be implemented
                 # later (so at the moment the function
                 # performs more like Dijkstra than proper a*)
-                new_cost = cost_so_far[current] + 0# self.map.getCost(current, next)
+                new_cost = cost_so_far[current] + self.getCost(current, next)
                 if next not in cost_so_far or new_cost < cost_so_far[next]:
                     cost_so_far[next] = new_cost
                     # f(x) = g(x) + h(x)
@@ -78,25 +77,4 @@ class Graph:
         return path
 
     def getCost(self, current, next):
-        return abs(current[0] - next[0]) + abs(current[1] + next[1])
-
-'''
-test = [['.', '.', '.'],
-        ['.', '.', '.'],
-        ['.', '.', '.'],
-        ['.', '.', '.']]
-
-testg = Graph(test)
-testg.generateGraph(test)
-for each in testg.edges:
-    print(each, ':', testg.edges[each])
-    
-print("////////////")
-print(testg.edges[(0,0)])
-print("////////////")
-for next in testg.edges[(0,0)]:
-    print(next)
-print('-_'*100)
-x = testg.Astar((0,0), (3,2))
-print(x)
-'''
+        return abs(current[0] - next[0]) + abs(current[1] - next[1])

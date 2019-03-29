@@ -68,3 +68,7 @@ class Logger:
         msg = str(entity) + ' took ' + str(Damage) + ' damage.'
         pygMsg = self.Font.render(msg, True, (0, 0, 0))
         self.log.append(pygMsg)
+
+    def log(self, string: str):
+        pygMsg = self.Font.render(string, True, (0, 0, 0))
+        self.log.append(pygMsg)

@@ -106,6 +106,10 @@ class Player(Entity):
             self.currentHealth -= enemy.attack
             self.logger.logCombat(attacker = enemy, defender = self, damage = enemy.attack)
 
+    def attacked(self, enemy):
+        self.currentHealth -= enemy.attack
+        self.logger.logCombat(enemy, self, enemy.attack)
+
 class Enemy(Entity):
     def __init__(self, x, y, spritesheet, spriteSize, map, interval, animRow):
         super().__init__(x, y, spritesheet, spriteSize, interval)
@@ -128,9 +132,8 @@ class Enemy(Entity):
                 positions.append(entity.getPosition())
             if not path[0] in positions:
                 self.y, self.x = path[0]
-
-    def combat(self, entity):
-        pass
+        else:
+            player.attacked(self)
 
     def die(self):
         self.isDead = True
