@@ -103,8 +103,10 @@ class Player(Entity):
         else:
             enemy.currentHealth -= self.attack
             self.logger.logCombat(attacker = self, defender = enemy, damage = self.attack)
-            self.currentHealth -= enemy.attack
-            self.logger.logCombat(attacker = enemy, defender = self, damage = enemy.attack)
+            if not enemy.combat:
+                enemy.combat = True
+                self.currentHealth -= enemy.attack
+                self.logger.logCombat(attacker = enemy, defender = self, damage = enemy.attack)
 
     def attacked(self, enemy):
         self.currentHealth -= enemy.attack
@@ -120,8 +122,11 @@ class Enemy(Entity):
         self.currentHealth: int
         self.maxHealth: int
 
+        self.combat = False
+
     def Update(self):
         super().Update()
+        self.combat = False
         if self.currentHealth <= 0:
             self.isDead = True
 
@@ -133,7 +138,9 @@ class Enemy(Entity):
             if not path[0] in positions:
                 self.y, self.x = path[0]
         else:
-            player.attacked(self)
+            if not self.combat:
+                self.combat = True
+                player.attacked(self)
 
     def die(self):
         self.isDead = True
