@@ -24,11 +24,11 @@ class GameScene(SceneBase):
         for y in range(0, len(Constants.testmap)):
             row = []
             for x in range(0, len(Constants.testmap[0])):
-                if Constants.testmap[y][x] == 0:
+                if Constants.testmap[y][x] == 1:
                     row.append(Tiles.Tile(gridPos=(x, y),
                                               collision=False,
                                               sprite=self.spritesheet.returnSprite(0, 0)))
-                elif Constants.testmap[y][x] == 1:
+                elif Constants.testmap[y][x] == 0:
                     row.append(Tiles.Tile(gridPos=(x, y),
                                               collision=True,
                                               sprite=self.spritesheet.returnSprite(1, 0)))
@@ -44,12 +44,12 @@ class GameScene(SceneBase):
         self.backRendered = False
         self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
         self.player = Entities.Player(x = 0, y = 0, map = self.TileMap)
-        self.Entities = [Entities.TestEnemy(x = 5, y = 5, Map = self.TileMap),
-                         Entities.TestEnemy(x = 4, y = 5, Map = self.TileMap),
-                         Entities.TestEnemy(x = 3, y = 5, Map = self.TileMap),
-                         Entities.TestEnemy(x = 2, y = 5, Map = self.TileMap),
-                         Entities.TestEnemy(x = 1, y = 5, Map = self.TileMap),
-                         Entities.TestEnemy(x = 0, y = 5, Map = self.TileMap)]
+        self.Entities = [Entities.TestEnemy(x = 3, y = 12, Map = self.TileMap),
+                         Entities.TestEnemy(x = 0, y = 21, Map = self.TileMap),
+                         Entities.TestEnemy(x = 10, y = 21, Map = self.TileMap),
+                         Entities.TestEnemy(x = 25, y = 21, Map = self.TileMap),
+                         Entities.TestEnemy(x = 7, y = 10, Map = self.TileMap),
+                         Entities.TestEnemy(x = 19, y = 10, Map = self.TileMap)]
         self.graph = Pathfinding.Graph(self.TileMap)
 
     def ProcessInputs(self, events, pressedKeys):
