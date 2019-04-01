@@ -16,7 +16,7 @@ def generateRandomList(width: int, height: int, chance: float) -> list:
 
 # Iterates through each cell and determines whether it lives or dies and creates a new map based on this
 def stepSimulation(map: list, deathLimit: int, birthLimit: int):
-    newMap = map
+    newMap = map.copy()
     for y in range(0, len(map)):
         for x in range(0, len(map[0])):
             neighbours = countLivingNeighbours(map, x, y)
@@ -46,10 +46,12 @@ def countLivingNeighbours(map: list, x: int, y: int):
                 count += 1
     return count
 
-def generateCellMap(width: int = 50, height: int = 50, chance: float = 0.4, steps: int = 2, birthLimit: int = 4, deathLimit: int = 3) -> list:
+def generateCellMap(width: int = 50, height: int = 50,
+                    chance: float = 0.6, steps: int = 6,
+                    birthLimit: int = 3, deathLimit: int = 4) -> list:
     map = generateRandomList(width, height, chance)
     for i in range(0, steps+1):
-        map = stepSimulation(map, birthLimit, deathLimit)
+        map = stepSimulation(map, birthLimit, deathLimit).copy()
     for each in map:
         print(each)
 
