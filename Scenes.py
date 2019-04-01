@@ -1,4 +1,4 @@
-import pygame, Image, Tiles, Constants, Entities, Pathfinding
+import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
         self.next = self
@@ -17,39 +17,25 @@ class SceneBase:
 class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
-        self.TileMap = []
+
+        self.TileMap = Mapper.generateCellularAutomata()
 
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
         self.OffsetX, self.OffsetY = 0, 0
-        for y in range(0, len(Constants.testmap)):
-            row = []
-            for x in range(0, len(Constants.testmap[0])):
-                if Constants.testmap[y][x] == 1:
-                    row.append(Tiles.Tile(gridPos=(x, y),
-                                              collision=False,
-                                              sprite=self.spritesheet.returnSprite(0, 0)))
-                elif Constants.testmap[y][x] == 0:
-                    row.append(Tiles.Tile(gridPos=(x, y),
-                                              collision=True,
-                                              sprite=self.spritesheet.returnSprite(1, 0)))
-                elif Constants.testmap[y][x] == 2:
-                    row.append(Tiles.AnimTile(gridPos=(x, y),
-                                              collision=True,
-                                              SpriteSheet=self.spritesheet,
-                                              row=1,
-                                              frames=2,
-                                              interval=10))
-            self.TileMap.append(row)
         self.animTiles = []
         self.backRendered = False
         self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
+
         self.player = Entities.Player(x = 0, y = 0, map = self.TileMap)
+        '''
         self.Entities = [Entities.TestEnemy(x = 3, y = 12, Map = self.TileMap),
                          Entities.TestEnemy(x = 0, y = 21, Map = self.TileMap),
                          Entities.TestEnemy(x = 10, y = 21, Map = self.TileMap),
                          Entities.TestEnemy(x = 25, y = 21, Map = self.TileMap),
                          Entities.TestEnemy(x = 7, y = 10, Map = self.TileMap),
                          Entities.TestEnemy(x = 19, y = 10, Map = self.TileMap)]
+        '''
+        self.Entities = []
         self.graph = Pathfinding.Graph(self.TileMap)
 
     def ProcessInputs(self, events, pressedKeys):
@@ -98,7 +84,7 @@ class GameScene(SceneBase):
     def offsetScene(self):
         #Getting map dimensions, both tile and pixel dimensions
         #TEMPORY FOR NOW UNTIL MAP GENERATION IS IMPLEMENTED
-        mapHeight, mapWidth = len(Constants.testmap), len(Constants.testmap[0])
+        mapHeight, mapWidth = len(self.TileMap), len(self.TileMap[0])
         mapPixelHeight, mapPixelWidth = mapHeight * Constants.TILESIZE, mapWidth * Constants.TILESIZE
         #Getting the position and pixel position of the player
         playerY, playerX = self.player.getPosition()

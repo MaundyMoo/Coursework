@@ -46,13 +46,10 @@ def countLivingNeighbours(map: list, x: int, y: int):
                 count += 1
     return count
 
-def generateCellMap(width: int = 50, height: int = 50,
-                    chance: float = 0.6, steps: int = 6,
-                    birthLimit: int = 3, deathLimit: int = 4) -> list:
+def driver(width: int, height: int,
+           chance: float, steps: int,
+           birthLimit: int, deathLimit: int) -> list:
     map = generateRandomList(width, height, chance)
     for i in range(0, steps+1):
         map = stepSimulation(map, birthLimit, deathLimit).copy()
-    for each in map:
-        print(each)
-
-generateCellMap()
+    return map
