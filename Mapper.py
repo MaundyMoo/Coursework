@@ -5,8 +5,8 @@ import Tiles, CellularAutomata, Image
 
 spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
 
-def generateCellularAutomata(width: int = 50,
-                             height: int = 50,
+def generateCellularAutomata(width: int = 26,
+                             height: int = 22,
                              chance: float = 0.6,
                              steps: int = 2,
                              birthLimit: int = 3,
@@ -20,11 +20,11 @@ def generateCellularAutomata(width: int = 50,
     for y in range(0, len(arr)):
         row = []
         for x in range(0, len(arr[0])):
-            if arr[y][x] == True:
+            if arr[y][x]:
                 row.append(Tiles.Tile(gridPos=(x, y),
                                       collision=False,
                                       sprite=spritesheet.returnSprite(0, 0)))
-            elif arr[y][x] == False:
+            else:#if arr[y][x]:
                 row.append(Tiles.Tile(gridPos=(x, y),
                                       collision=True,
                                       sprite=spritesheet.returnSprite(1, 0)))

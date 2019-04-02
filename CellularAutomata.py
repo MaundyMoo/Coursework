@@ -1,5 +1,5 @@
 from random import random
-
+import queue
 # Creates/Seeds a random 2D array with true or false values for alive or dead cells
 def generateRandomList(width: int, height: int, chance: float) -> list:
     map = []
@@ -46,10 +46,52 @@ def countLivingNeighbours(map: list, x: int, y: int):
                 count += 1
     return count
 
+def countCaverns(map: list):
+    caverns = []
+    for y in range(0, len(map)):
+        for x in range(0, len(map[0])):
+            # Checks if the cell is True and not already in a cavern
+            if map[y][x] and not any((y,x) in cavern for cavern in caverns):
+                # Perform the flood fill / BFS
+                caverns.append(IterativeBFS((y, x), map))
+            else:
+                # Already counted cell so ignore or the cell is 'dead'
+                continue
+    return caverns
+
+def IterativeBFS(point: tuple, map: list):
+    q = queue.Queue()
+    q.put(point)
+    cavern = []
+    while not q.empty():
+        (y, x) = q.get()
+        if not (y, x) in cavern:
+            cavern.append((y, x))
+
+            if not y == len(map)-1:
+                if map[y + 1][x] and not (y + 1, x) in cavern:
+                    q.put((y + 1, x))
+
+            if not y == 0:
+                if map[y - 1][x] and not (y - 1, x) in cavern:
+                    q.put((y - 1, x))
+
+            if not x == len(map[0])-1:
+                if map[y][x + 1] and not (y, x + 1) in cavern:
+                    q.put((y, x + 1))
+
+            if not x == 0:
+                if map[y][x - 1] and not (y, x - 1) in cavern:
+                    q.put((y, x - 1))
+    return cavern
+
 def driver(width: int, height: int,
            chance: float, steps: int,
            birthLimit: int, deathLimit: int) -> list:
     map = generateRandomList(width, height, chance)
-    for i in range(0, steps+1):
+    for i in range(0, steps):
         map = stepSimulation(map, birthLimit, deathLimit).copy()
+    caverns = countCaverns(map)
+    print(caverns)
+    print(len(caverns))
     return map
