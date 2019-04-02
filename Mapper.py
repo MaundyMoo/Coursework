@@ -5,9 +5,9 @@ import Tiles, CellularAutomata, Image
 
 spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
 
-def generateCellularAutomata(width: int = 26,
+def ggenerateCellularAutomata(width: int = 26,
                              height: int = 22,
-                             chance: float = 0.6,
+                             chance: float = 0.65,
                              steps: int = 2,
                              birthLimit: int = 3,
                              deathLimit: int = 4) -> list:
@@ -20,13 +20,17 @@ def generateCellularAutomata(width: int = 26,
     for y in range(0, len(arr)):
         row = []
         for x in range(0, len(arr[0])):
-            if arr[y][x]:
+            if arr[y][x] == True:
                 row.append(Tiles.Tile(gridPos=(x, y),
                                       collision=False,
                                       sprite=spritesheet.returnSprite(0, 0)))
-            else:#if arr[y][x]:
+            elif arr[y][x] == False:
                 row.append(Tiles.Tile(gridPos=(x, y),
                                       collision=True,
                                       sprite=spritesheet.returnSprite(1, 0)))
+            elif arr[y][x] == 'corridoor':
+                row.append(Tiles.Tile(gridPos=(x, y),
+                                      collision=False,
+                                      sprite=spritesheet.returnSprite(0, 2)))
         tileMap.append(row)
     return tileMap

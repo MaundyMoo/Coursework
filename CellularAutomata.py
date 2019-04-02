@@ -1,4 +1,4 @@
-from random import random
+from random import random, choice
 import queue
 # Creates/Seeds a random 2D array with true or false values for alive or dead cells
 def generateRandomList(width: int, height: int, chance: float) -> list:
@@ -85,6 +85,26 @@ def IterativeBFS(point: tuple, map: list):
                     q.put((y, x - 1))
     return cavern
 
+def placeCorridors(map: list, caverns: list):
+    if len(caverns) > 1:
+        for i in range(0, len(caverns)-1):
+            y1, x1 = choice(caverns[i])
+            y2, x2 = choice(caverns[i+1])
+            # Connect on x axis
+            if x1 < x2:
+                for i in range(x1, x2 + 1):
+                    map[y1][i] = 'corridoor'
+            elif x1 > x2:
+                for i in range(x2, x1 + 1):
+                    map[y1][i] = 'corridoor'
+            if y1 < y2:
+                for i in range(y1, y2 + 1):
+                    map[i][x2] = 'corridoor'
+            elif y1 > y2:
+                for i in range(y2, y1 + 1):
+                    map[i][x2] = 'corridoor'
+    return map
+
 def driver(width: int, height: int,
            chance: float, steps: int,
            birthLimit: int, deathLimit: int) -> list:
@@ -94,4 +114,5 @@ def driver(width: int, height: int,
     caverns = countCaverns(map)
     print(caverns)
     print(len(caverns))
+    map = placeCorridors(map, caverns)
     return map
