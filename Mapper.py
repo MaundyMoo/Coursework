@@ -5,7 +5,7 @@ import Tiles, CellularAutomata, Image
 
 spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
 
-def ggenerateCellularAutomata(width: int = 26,
+def generateCellularAutomata(width: int = 26,
                              height: int = 22,
                              chance: float = 0.65,
                              steps: int = 2,
