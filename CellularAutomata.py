@@ -112,7 +112,5 @@ def driver(width: int, height: int,
     for i in range(0, steps):
         map = stepSimulation(map, birthLimit, deathLimit).copy()
     caverns = countCaverns(map)
-    print(caverns)
-    print(len(caverns))
     map = placeCorridors(map, caverns)
-    return map
+    return map, caverns

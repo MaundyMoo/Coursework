@@ -2,6 +2,7 @@
 Interfaces with map generation algorithms to produce tilemaps
 '''
 import Tiles, CellularAutomata, Image
+from random import choice
 
 spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
 
@@ -12,7 +13,8 @@ def generateCellularAutomata(width: int = 26,
                              birthLimit: int = 3,
                              deathLimit: int = 4) -> list:
     '''Returns a tilemap from the CellularAutomata method'''
-    arr = CellularAutomata.driver(width, height, chance, steps, birthLimit, deathLimit)
+    arr, caverns = CellularAutomata.driver(width, height, chance, steps, birthLimit, deathLimit)
+
     tileMap = []
     # Iterates over the 2D list returned by the cellauto algorithm
     # and places a non collidable tile at a true value, and a collidable
@@ -33,4 +35,13 @@ def generateCellularAutomata(width: int = 26,
                                       collision=False,
                                       sprite=spritesheet.returnSprite(0, 2)))
         tileMap.append(row)
-    return tileMap
+    return tileMap, caverns
+
+def placeEnemiesCellular(caverns):
+    positions = []
+    for cavern in caverns:
+        for i in range(0, len(cavern) % 5):
+            location = choice(cavern)
+            if not location in positions:
+                positions.append(location)
+    return positions

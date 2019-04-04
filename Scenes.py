@@ -1,4 +1,5 @@
 import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper
+from random import choice
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
         self.next = self
@@ -16,9 +17,6 @@ class SceneBase:
 
 class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
-        super().__init__(WIDTH, HEIGHT)
-
-        self.TileMap = Mapper.generateCellularAutomata()
 
         self.spritesheet = Image.SpriteSheet(path = "res/testSheet.png", spriteSize = 32)
         self.OffsetX, self.OffsetY = 0, 0
@@ -26,16 +24,21 @@ class GameScene(SceneBase):
         self.backRendered = False
         self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
 
-        self.player = Entities.Player(x = 0, y = 0, map = self.TileMap)
-        '''
-        self.Entities = [Entities.TestEnemy(x = 3, y = 12, Map = self.TileMap),
-                         Entities.TestEnemy(x = 0, y = 21, Map = self.TileMap),
-                         Entities.TestEnemy(x = 10, y = 21, Map = self.TileMap),
-                         Entities.TestEnemy(x = 25, y = 21, Map = self.TileMap),
-                         Entities.TestEnemy(x = 7, y = 10, Map = self.TileMap),
-                         Entities.TestEnemy(x = 19, y = 10, Map = self.TileMap)]
-        '''
         self.Entities = []
+
+        super().__init__(WIDTH, HEIGHT)
+
+        self.TileMap, caverns = Mapper.generateCellularAutomata()
+        self.entitypositions = Mapper.placeEnemiesCellular(caverns)
+
+        for position in self.entitypositions:
+            self.Entities.append(Entities.TestEnemy(x=position[1], y=position[0], Map=self.TileMap))
+
+        playerPos = choice(caverns[0])
+        while playerPos in self.entitypositions:
+            playerPos = choice(caverns[0])
+
+        self.player = Entities.Player(x = playerPos[1], y = playerPos[0], map = self.TileMap)
         self.graph = Pathfinding.Graph(self.TileMap)
 
     def ProcessInputs(self, events, pressedKeys):
