@@ -62,8 +62,9 @@ class GameScene(SceneBase):
                     self.player.move(1, 0, self.Entities)
                     self.player.setDirection(2, True)
                 for entity in self.Entities:
-                    path = self.graph.Astar(source = entity.getPosition(), target = self.player.getPosition())
-                    entity.move(path, self.Entities, self.player)
+                    if entity.inRange(self.player):
+                        path = self.graph.Astar(source = entity.getPosition(), target = self.player.getPosition())
+                        entity.move(path, self.Entities, self.player)
                 self.offsetScene()
                 self.backRendered = False
 

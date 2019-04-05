@@ -124,6 +124,8 @@ class Enemy(Entity):
 
         self.combat = False
 
+        self.agrorange = 8
+
     def Update(self):
         super().Update()
         self.combat = False
@@ -144,6 +146,13 @@ class Enemy(Entity):
 
     def die(self):
         self.isDead = True
+
+    def inRange(self, player) -> bool:
+        distanceToPlayer = ((self.x - player.x) ** 2 + (self.y - player.y) ** 2) ** 0.5
+        if distanceToPlayer < self.agrorange:
+            return True
+        else:
+            return False
 
 class TestEnemy(Enemy):
     def __init__(self, x: int, y: int, Map: list):
