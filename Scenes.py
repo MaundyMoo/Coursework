@@ -1,4 +1,4 @@
-import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper
+import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper, DatabaseHandler
 from random import choice
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
@@ -18,8 +18,13 @@ class SceneBase:
 class TitleScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
         super().__init__(WIDTH, HEIGHT)
-        self.Font = pygame.font.SysFont("Lucida Console", 72)
+        self.Font = pygame.font.SysFont("Lucida Console", 56)
+        self.TitleFont = pygame.font.SysFont("Lucida Console", 82)
+        self.backgroundColour = (80, 180, 100)
         self.menuPointer = 0
+
+        self.Title = self.TitleFont.render('Coursework', True, (200, 200, 100))
+        self.offset = 120
 
         # Dictionary that holds both the text to be displayed in
         # the menu as well as the corresponding function that
@@ -37,7 +42,7 @@ class TitleScene(SceneBase):
     def start(self):
         self.SwitchScene(GameScene(self.WIDTH, self.HEIGHT))
     def settings(self):
-        print('settings')
+        self.SwitchScene(SettingsScene(self.WIDTH, self.HEIGHT))
     def exit(self):
         self.Terminate()
 
@@ -47,9 +52,9 @@ class TitleScene(SceneBase):
         self.menu = []
         for i in range(0, len(self.dictOptions)):
             # Long ternary operator for adding text to the menu probably cleaner without tbh
-            self.menu.append(self.Font.render(self.dictOptions[i][0], True, (200, 50, 250))) \
+            self.menu.append(self.Font.render(self.dictOptions[i][0], True, (150, 50, 200))) \
                 if i == self.menuPointer \
-                else self.menu.append(self.Font.render(self.dictOptions[i][0], True, (75, 50, 150)))
+                else self.menu.append(self.Font.render(self.dictOptions[i][0], True, (50, 25, 75)))
 
     def ProcessInputs(self, events, pressed_keys):
         for event in events:
@@ -63,10 +68,41 @@ class TitleScene(SceneBase):
                     self.dictOptions[self.menuPointer][1]()
 
     def Render(self, screen):
-        screen.fill((80, 180, 100))
+        # Fills the screen with a constant colour
+        screen.fill(self.backgroundColour)
+        # Draws the title to the screen
+        # Screen.blit(surface, (left, top))
+        screen.blit(self.Title, ((Constants.SCREEN_WIDTH/2) - self.Title.get_width()/2, 20))
+        # Draws each option to the screen
         for i in range(0, len(self.menu)):
-            screen.blit(self.menu[i], (20, self.Font.get_height() * i + 5))
+            screen.blit(self.menu[i], (20, self.Font.get_height() * i + self.offset))
 
+class SettingsScene(TitleScene):
+    def __init__(self, WIDTH: int, HEIGHT: int):
+        super().__init__(WIDTH, HEIGHT)
+        self.backgroundColour = (200, 150, 100)
+        self.Database = DatabaseHandler.Database()
+
+        self.offset = 20
+        self.Title = self.TitleFont.render('', True, (200, 200, 100))
+
+        self.dictOptions = {
+                                0: ('Rebind Controls', self.foo),
+                                1: ('Load Profile', self.foo),
+                                2: ('New Profile', self.foo),
+                                3: ('Main Menu', self.MainMenu)
+                            }
+        # Rectangle used as border
+        # Rect((left, top), (width, height))
+        self.control_border = pygame.Rect((Constants.SCREEN_WIDTH/2)-5, 5, Constants.SCREEN_WIDTH/2, self.HEIGHT-10)
+    def foo(self):
+        print('temporary function')
+    def MainMenu(self):
+        self.SwitchScene(TitleScene(self.WIDTH, self.HEIGHT))
+    def Render(self, screen):
+        super().Render(screen)
+        # Draws a border where the controls / profile information will be shown
+        pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
 
 class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):

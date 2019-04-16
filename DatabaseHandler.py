@@ -16,8 +16,7 @@ class Database:
         if not result:
             self.create_database()
         else:
-            self.create_player('Yeet')
-            print(self.get_players())
+            print('Found Database')
 
     def create_database(self):
         # Creates empty tables for the database
@@ -71,6 +70,3 @@ class Database:
         SELECT UserName FROM Players
         ''')
         return self.cur.fetchall()
-
-
-test = Database()
