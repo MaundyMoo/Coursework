@@ -15,6 +15,59 @@ class SceneBase:
     def Terminate(self):
         self.SwitchScene(None)
 
+class TitleScene(SceneBase):
+    def __init__(self, WIDTH: int, HEIGHT: int):
+        super().__init__(WIDTH, HEIGHT)
+        self.Font = pygame.font.SysFont("Lucida Console", 72)
+        self.menuPointer = 0
+
+        # Dictionary that holds both the text to be displayed in
+        # the menu as well as the corresponding function that
+        # the option should call
+        self.dictOptions = {
+                                0: ('Start', self.start),
+                                1: ('Settings', self.settings),
+                                2: ('Exit', self.exit)
+                            }
+        self.menu = []
+
+    # Methods used as wrappers to call functions from the dictionary
+    # As I cannot parse values through and this allows me to add extra
+    # functionality if needed
+    def start(self):
+        self.SwitchScene(GameScene(self.WIDTH, self.HEIGHT))
+    def settings(self):
+        print('settings')
+    def exit(self):
+        self.Terminate()
+
+    def Update(self):
+        if self.menuPointer == -1: self.menuPointer = len(self.menu)-1
+        if self.menuPointer == len(self.menu): self.menuPointer = 0
+        self.menu = []
+        for i in range(0, len(self.dictOptions)):
+            # Long ternary operator for adding text to the menu probably cleaner without tbh
+            self.menu.append(self.Font.render(self.dictOptions[i][0], True, (200, 50, 250))) \
+                if i == self.menuPointer \
+                else self.menu.append(self.Font.render(self.dictOptions[i][0], True, (75, 50, 150)))
+
+    def ProcessInputs(self, events, pressed_keys):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.menuPointer -= 1
+                elif event.key == pygame.K_DOWN:
+                    self.menuPointer += 1
+                if event.key == pygame.K_RETURN:
+                    # Calls the function held in the dictionary
+                    self.dictOptions[self.menuPointer][1]()
+
+    def Render(self, screen):
+        screen.fill((80, 180, 100))
+        for i in range(0, len(self.menu)):
+            screen.blit(self.menu[i], (20, self.Font.get_height() * i + 5))
+
+
 class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
 
