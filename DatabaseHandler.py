@@ -16,14 +16,14 @@ class Database:
         if not result:
             self.create_database()
         else:
-            print('Found Database')
+            print(self.read_controls_player('Default'))
 
     def create_database(self):
         # Creates empty tables for the database
         self.cur.execute('''
         CREATE TABLE IF NOT EXISTS Controls (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        Label TEXT NOT NULL,
+        Label TEXT UNIQUE NOT NULL,
         KEY_UP INTEGER NOT NULL,
         KEY_DOWN INTEGER NOT NULL,
         KEY_LEFT INTEGER NOT NULL,
@@ -33,7 +33,7 @@ class Database:
         CREATE TABLE IF NOT EXISTS Players (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
         ControlsID INTEGER NOT NULL,
-        UserName TEXT NOT NULL,
+        UserName TEXT UNIQUE NOT NULL,
         FOREIGN KEY (ControlsID) REFERENCES Controls (ID));
         ''')
         self.cur.execute('''
@@ -55,13 +55,35 @@ class Database:
 
     def create_player(self, playerName: str, controls: int = 0):
         '''Creates a new player profile, defaults to default controls'''
-        self.cur.execute('''INSERT INTO Players (ControlsID, UserName) VALUES (?, ?);''', (controls, playerName))
+        added = False
+        # Counter is the number that is added to the end of a duplicate name
+        # To ensure names are unique
+        counter = 0
+        # Input is what the player inputted and will never contain the counter
+        input = playerName
+        while not added:
+            try:
+                self.cur.execute('''INSERT INTO Players (ControlsID, UserName) VALUES (?, ?);''', (controls, playerName))
+                added = True
+            # The error that is raised if the unique condition is broken
+            except sql.IntegrityError:
+                playerName = input + str(counter)
+                counter += 1
         self.con.commit()
 
     def create_controls(self, controlLabel: str, UP: int, DOWN: int, LEFT: int, RIGHT: int):
         '''Creates a new control binding'''
-        self.cur.execute('''INSERT INTO Controls (Label, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT) VALUES (?, ?, ?, ?, ?);''',
-                         (controlLabel, UP, DOWN, LEFT, RIGHT))
+        added = False
+        counter = 0
+        input = controlLabel
+        while not added:
+            try:
+                self.cur.execute('''INSERT INTO Controls (Label, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT) VALUES (?, ?, ?, ?, ?);''',
+                                 (controlLabel, UP, DOWN, LEFT, RIGHT))
+                added = True
+            except sql.IntegrityError:
+                controlLabel = input + str(counter)
+                counter += 1
         self.con.commit()
 
     def get_players(self) -> tuple:
@@ -70,3 +92,14 @@ class Database:
         SELECT UserName FROM Players
         ''')
         return self.cur.fetchall()
+
+    def read_controls_label(self, controlLabel: str) -> tuple:
+        '''Returns the controls of a control profile using the control label'''
+        self.cur.execute('''SELECT KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT FROM Controls WHERE Label = ?''', (controlLabel,))
+        return self.cur.fetchone()
+    def read_controls_player(self, playerName: str) -> tuple:
+        '''Returns the controls of a given player profile using an Inner Join'''
+        self.cur.execute('''
+        SELECT KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT FROM Controls INNER JOIN Players on Controls.ID = Players.ControlsID WHERE Players.UserName = ?
+        ''', (playerName,))
+        return self.cur.fetchone()
