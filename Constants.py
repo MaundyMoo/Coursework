@@ -6,6 +6,9 @@ GAME_WIDTH = SCREEN_WIDTH - LOG_WIDTH
 
 TILESIZE = 32
 
+PlayerControls = [273, 274, 276, 275]
+playerName = 'Default'
+
 #Gets the directory of where the file is being run from
 WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 #Joins any input path to the working directory

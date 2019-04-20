@@ -65,7 +65,7 @@ class Player(Entity):
         self.currentHealth = self.maxHealth
         self.isDead = False
         self.attack = 3
-        self.name = 'Player'
+        self.name = Constants.playerName
 
     def Update(self):
         super().Update()

@@ -1,5 +1,5 @@
 import sqlite3 as sql
-import Constants
+import Constants, pygame
 
 class Database:
     def __init__(self):
@@ -15,8 +15,6 @@ class Database:
         result = self.cur.fetchall()
         if not result:
             self.create_database()
-        else:
-            print(self.read_controls_player('Default'))
 
     def create_database(self):
         # Creates empty tables for the database
@@ -100,6 +98,7 @@ class Database:
     def read_controls_player(self, playerName: str) -> tuple:
         '''Returns the controls of a given player profile using an Inner Join'''
         self.cur.execute('''
-        SELECT KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT FROM Controls INNER JOIN Players on Controls.ID = Players.ControlsID WHERE Players.UserName = ?
+        SELECT KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT FROM Controls 
+        INNER JOIN Players on Controls.ID = Players.ControlsID WHERE Players.UserName = ?
         ''', (playerName,))
         return self.cur.fetchone()

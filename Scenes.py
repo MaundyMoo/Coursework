@@ -87,22 +87,73 @@ class SettingsScene(TitleScene):
         self.Title = self.TitleFont.render('', True, (200, 200, 100))
 
         self.dictOptions = {
-                                0: ('Rebind Controls', self.foo),
-                                1: ('Load Profile', self.foo),
-                                2: ('New Profile', self.foo),
-                                3: ('Main Menu', self.MainMenu)
+                                0: ('Add Controls', self.foo),
+                                1: ('New Profile', self.foo),
+                                2: ('Main Menu', self.MainMenu)
                             }
         # Rectangle used as border
         # Rect((left, top), (width, height))
         self.control_border = pygame.Rect((Constants.SCREEN_WIDTH/2)-5, 5, Constants.SCREEN_WIDTH/2, self.HEIGHT-10)
+
+        self.players = self.Database.get_players()
+        self.playerPointer = 0
+        # Default values just in case
+        self.playerText = self.Font.render(self.players[0][0], True, (0, 0, 0))
+        self.controls = self.Database.read_controls_player(self.players[0][0])
+        self.bindingsText = [self.Font.render('UP:    ', True, (0, 0, 0)),
+                             self.Font.render('DOWN:  ', True, (0, 0, 0)),
+                             self.Font.render('LEFT:  ', True, (0, 0, 0)),
+                             self.Font.render('RIGHT: ', True, (0, 0, 0))]
+
+        self.controlTexts = [self.Font.render(str(self.controls[0]), True, (0, 0, 0)),
+                             self.Font.render(str(self.controls[1]), True, (0, 0, 0)),
+                             self.Font.render(str(self.controls[2]), True, (0, 0, 0)),
+                             self.Font.render(str(self.controls[3]), True, (0, 0, 0))]
+
     def foo(self):
         print('temporary function')
     def MainMenu(self):
+        Constants.PlayerControls = self.controls
+        Constants.playerName = self.players[self.playerPointer][0]
         self.SwitchScene(TitleScene(self.WIDTH, self.HEIGHT))
+
     def Render(self, screen):
         super().Render(screen)
         # Draws a border where the controls / profile information will be shown
         pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
+        screen.blit(self.playerText, (Constants.SCREEN_WIDTH/2 + 15, 15))
+
+        for i in range(0, len(self.bindingsText)):
+            screen.blit(self.bindingsText[i],
+                        (Constants.SCREEN_WIDTH / 2 + 15,
+                         15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
+
+        for i in range(0, len(self.controlTexts)):
+            screen.blit(self.controlTexts[i],
+                        (Constants.SCREEN_WIDTH/2 + 15 + self.bindingsText[0].get_width(),
+                         15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
+
+
+    def ProcessInputs(self, events, pressed_keys):
+        super().ProcessInputs(events, pressed_keys)
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.playerPointer -= 1
+                elif event.key == pygame.K_RIGHT:
+                    self.playerPointer += 1
+
+    def Update(self):
+        super().Update()
+        if self.playerPointer == -1: self.playerPointer = len(self.players)-1
+        if self.playerPointer == len(self.players): self.playerPointer = 0
+        # Updates the text to be shown
+        self.playerText = self.Font.render((self.players[self.playerPointer][0]), True, (0, 0, 0))
+        self.controls = self.Database.read_controls_player(self.players[self.playerPointer][0])
+        self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
+                             self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
+                             self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
+                             self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
 
 class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
@@ -111,7 +162,7 @@ class GameScene(SceneBase):
         self.OffsetX, self.OffsetY = 0, 0
         self.animTiles = []
         self.backRendered = False
-        self.playerInputs = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
+        self.playerInputs = Constants.PlayerControls
 
         self.Entities = []
 
