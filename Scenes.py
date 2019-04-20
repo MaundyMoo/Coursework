@@ -110,6 +110,9 @@ class SettingsScene(TitleScene):
                              self.Font.render(str(self.controls[2]), True, (0, 0, 0)),
                              self.Font.render(str(self.controls[3]), True, (0, 0, 0))]
 
+        self.leftArrow = self.Font.render('<', True, (0,0,0))
+        self.rightArrow = self.Font.render('>', True, (0, 0, 0))
+
     def foo(self):
         print('temporary function')
     def MainMenu(self):
@@ -121,7 +124,14 @@ class SettingsScene(TitleScene):
         super().Render(screen)
         # Draws a border where the controls / profile information will be shown
         pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
-        screen.blit(self.playerText, (Constants.SCREEN_WIDTH/2 + 15, 15))
+        screen.blit(self.playerText, ((Constants.SCREEN_WIDTH*3)/4 - self.playerText.get_width()/2, 15))
+
+        screen.blit(self.leftArrow,
+                    (Constants.SCREEN_WIDTH / 2 + 15,
+                     15))
+        screen.blit(self.rightArrow,
+                    (Constants.SCREEN_WIDTH - self.rightArrow.get_width() - 15,
+                     15))
 
         for i in range(0, len(self.bindingsText)):
             screen.blit(self.bindingsText[i],
