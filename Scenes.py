@@ -1,4 +1,4 @@
-import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper, DatabaseHandler
+import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper, DatabaseHandler, pygame_textinput
 from random import choice
 class SceneBase:
     def __init__(self, WIDTH: int, HEIGHT: int):
@@ -87,8 +87,8 @@ class SettingsScene(TitleScene):
         self.Title = self.TitleFont.render('', True, (200, 200, 100))
 
         self.dictOptions = {
-                                0: ('Add Controls', self.foo),
-                                1: ('New Profile', self.foo),
+                                0: ('Add Controls', self.InputControl),
+                                1: ('New Profile', self.InputPlayer),
                                 2: ('Main Menu', self.MainMenu)
                             }
         # Rectangle used as border
@@ -113,8 +113,14 @@ class SettingsScene(TitleScene):
         self.leftArrow = self.Font.render('<', True, (0,0,0))
         self.rightArrow = self.Font.render('>', True, (0, 0, 0))
 
-    def foo(self):
-        print('temporary function')
+        self.playerInput = False
+        self.textinput = pygame_textinput.TextInput()
+
+    def InputControl(self):
+        print('desu')
+    def InputPlayer(self):
+        self.playerInput = not self.playerInput
+
     def MainMenu(self):
         Constants.PlayerControls = self.controls
         Constants.playerName = self.players[self.playerPointer][0]
@@ -143,15 +149,29 @@ class SettingsScene(TitleScene):
                         (Constants.SCREEN_WIDTH/2 + 15 + self.bindingsText[0].get_width(),
                          15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
 
+        if self.playerInput: screen.blit(self.textinput.get_surface(), (100, 400))
+
 
     def ProcessInputs(self, events, pressed_keys):
-        super().ProcessInputs(events, pressed_keys)
+        if not events == []: print(events)
         for event in events:
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.menuPointer -= 1
+                elif event.key == pygame.K_DOWN:
+                    self.menuPointer += 1
                 if event.key == pygame.K_LEFT:
                     self.playerPointer -= 1
                 elif event.key == pygame.K_RIGHT:
                     self.playerPointer += 1
+                elif event.key == pygame.K_ESCAPE:
+                    self.MainMenu()
+                elif event.key == pygame.K_RETURN:
+                    # Calls the function held in the dictionary
+                    print('test')
+                    self.dictOptions[self.menuPointer][1]()
+        if self.playerInput:
+            self.textinput.update(events)
 
     def Update(self):
         super().Update()
@@ -164,6 +184,28 @@ class SettingsScene(TitleScene):
                              self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
                              self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
                              self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
+
+
+class InputScene(TitleScene):
+    def __init__(self, WIDTH, HEIGHT, inputPlayer: bool):
+        super().__init__(WIDTH, HEIGHT)
+        self.backgroundColour = (120,100,240)
+        self.Title = self.TitleFont.render('', True, (200, 200, 100))
+        if inputPlayer:
+            self.dictOptions = {
+
+            }
+
+    def Update(self):
+        super().Update()
+    def ProcessInputs(self, events, pressed_keys):
+        super().ProcessInputs(events, pressed_keys)
+        def ProcessInputs(self, events, pressed_keys):
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    pass
+    def Render(self, screen):
+        super().Render(screen)
 
 class GameScene(SceneBase):
     def __init__(self, WIDTH: int, HEIGHT: int):
