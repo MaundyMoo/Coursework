@@ -117,9 +117,14 @@ class SettingsScene(TitleScene):
         self.textinput = pygame_textinput.TextInput()
 
     def InputControl(self):
-        print('desu')
+        print('InputControl')
     def InputPlayer(self):
-        self.playerInput = not self.playerInput
+        if not self.playerInput:
+            self.playerInput = True
+        else:
+            self.playerInput = False
+            self.Database.create_player(self.textinput.get_text())
+            self.players = self.Database.get_players()
 
     def MainMenu(self):
         Constants.PlayerControls = self.controls
@@ -153,23 +158,15 @@ class SettingsScene(TitleScene):
 
 
     def ProcessInputs(self, events, pressed_keys):
-        if not events == []: print(events)
+        super().ProcessInputs(events, pressed_keys)
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.menuPointer -= 1
-                elif event.key == pygame.K_DOWN:
-                    self.menuPointer += 1
                 if event.key == pygame.K_LEFT:
                     self.playerPointer -= 1
                 elif event.key == pygame.K_RIGHT:
                     self.playerPointer += 1
                 elif event.key == pygame.K_ESCAPE:
                     self.MainMenu()
-                elif event.key == pygame.K_RETURN:
-                    # Calls the function held in the dictionary
-                    print('test')
-                    self.dictOptions[self.menuPointer][1]()
         if self.playerInput:
             self.textinput.update(events)
 
