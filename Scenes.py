@@ -114,7 +114,7 @@ class SettingsScene(TitleScene):
         self.rightArrow = self.Font.render('>', True, (0, 0, 0))
 
         self.playerInput = False
-        self.textinput = pygame_textinput.TextInput()
+        self.textinput = pygame_textinput.TextInput(font_family="Lucida Console", font_size=56, initial_string="Name")
 
     def InputControl(self):
         print('InputControl')
@@ -135,7 +135,6 @@ class SettingsScene(TitleScene):
         super().Render(screen)
         # Draws a border where the controls / profile information will be shown
         pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
-        screen.blit(self.playerText, ((Constants.SCREEN_WIDTH*3)/4 - self.playerText.get_width()/2, 15))
 
         screen.blit(self.leftArrow,
                     (Constants.SCREEN_WIDTH / 2 + 15,
@@ -149,12 +148,18 @@ class SettingsScene(TitleScene):
                         (Constants.SCREEN_WIDTH / 2 + 15,
                          15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
 
-        for i in range(0, len(self.controlTexts)):
-            screen.blit(self.controlTexts[i],
-                        (Constants.SCREEN_WIDTH/2 + 15 + self.bindingsText[0].get_width(),
-                         15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
+        if not self.playerInput:
+            screen.blit(self.playerText, ((Constants.SCREEN_WIDTH*3)/4 - self.playerText.get_width()/2, 15))
 
-        if self.playerInput: screen.blit(self.textinput.get_surface(), (100, 400))
+
+            for i in range(0, len(self.controlTexts)):
+                screen.blit(self.controlTexts[i],
+                            (Constants.SCREEN_WIDTH/2 + 15 + self.bindingsText[0].get_width(),
+                             15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
+
+        else:
+            self.menuPointer = 1
+            screen.blit(self.textinput.get_surface(), ((Constants.SCREEN_WIDTH*3)/4 - self.textinput.get_surface().get_width()/2, 15))
 
 
     def ProcessInputs(self, events, pressed_keys):
