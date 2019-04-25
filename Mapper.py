@@ -37,7 +37,7 @@ def generateCellularAutomata(width: int = 26,
         tileMap.append(row)
     return tileMap, caverns
 
-def placeEnemiesCellular(caverns):
+def placeEnemiesCellular(caverns) -> list:
     positions = []
     for cavern in caverns:
         for i in range(0, len(cavern) % 5):
