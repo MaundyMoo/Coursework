@@ -30,10 +30,12 @@ def generateCellularAutomata(width: int = 26,
                 row.append(Tiles.Tile(gridPos=(x, y),
                                       collision=True,
                                       sprite=spritesheet.returnSprite(1, 0)))
+            '''
             elif arr[y][x] == 'corridoor':
                 row.append(Tiles.Tile(gridPos=(x, y),
                                       collision=False,
                                       sprite=spritesheet.returnSprite(0, 2)))
+            '''
         tileMap.append(row)
     return tileMap, caverns
 

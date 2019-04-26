@@ -93,16 +93,16 @@ def placeCorridors(map: list, caverns: list):
             # Connect on x axis
             if x1 < x2:
                 for i in range(x1, x2 + 1):
-                    map[y1][i] = 'corridoor'
+                    map[y1][i] = True
             elif x1 > x2:
                 for i in range(x2, x1 + 1):
-                    map[y1][i] = 'corridoor'
+                    map[y1][i] = True
             if y1 < y2:
                 for i in range(y1, y2 + 1):
-                    map[i][x2] = 'corridoor'
+                    map[i][x2] = True
             elif y1 > y2:
                 for i in range(y2, y1 + 1):
-                    map[i][x2] = 'corridoor'
+                    map[i][x2] = True
     return map
 
 def driver(width: int, height: int,
