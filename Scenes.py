@@ -128,7 +128,21 @@ class SettingsScene(TitleScene):
         self.textinput = pygame_textinput.TextInput(font_family="Lucida Console", font_size=56, initial_string="Name")
 
     def InputControl(self):
-        print('InputControl')
+        # prevents pygame from adding these events
+        # MOUSEMOTION is for detecting mouseinputs
+        # KEYUP is any key that is released and not pressed
+        # ACTIVEEVENT is run when the window regains focus from the Operating System
+        unbindableEvents = [pygame.MOUSEMOTION, pygame.KEYUP, pygame.ACTIVEEVENT]
+        pygame.event.set_blocked(unbindableEvents)
+        controls = []
+        while not len(controls) == 4:
+            # Clears the event buffer
+            bind = pygame.event.clear()
+            bind = pygame.event.wait()
+            if not bind in controls:
+                # .key is the attribute that holds the value for the key pressed
+                controls.append(bind.key)
+        self.Database.create_controls('TEST',*controls)
 
     def InputPlayer(self):
         if not self.playerInput:
@@ -196,31 +210,6 @@ class SettingsScene(TitleScene):
                              self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
                              self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
                              self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
-
-
-class InputScene(TitleScene):
-    def __init__(self, WIDTH, HEIGHT, inputPlayer: bool):
-        super().__init__(WIDTH, HEIGHT)
-        self.backgroundColour = (120, 100, 240)
-        self.Title = self.TitleFont.render('', True, (200, 200, 100))
-        if inputPlayer:
-            self.dictOptions = {
-
-            }
-
-    def Update(self):
-        super().Update()
-
-    def ProcessInputs(self, events, pressed_keys):
-        super().ProcessInputs(events, pressed_keys)
-
-        def ProcessInputs(self, events, pressed_keys):
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    pass
-
-    def Render(self, screen):
-        super().Render(screen)
 
 
 class GameScene(SceneBase):
