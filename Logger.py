@@ -2,20 +2,22 @@
 This class is responsable for the majority of the UI elements that
 pertain to player information
 '''
-import pygame,  Constants
+import pygame, Constants
+
+
 class Logger:
     def __init__(self, pos: int, width: int, height: int):
         self.position = Constants.GAME_WIDTH
         self.width, self.height = Constants.LOG_WIDTH, Constants.SCREEN_HEIGHT
-        #Initialise attributes with a default value (0 or null crashes unfortunately)
-        #As the width of the health bar is given by the ratio health / maxHealth
+        # Initialise attributes with a default value (0 or null crashes unfortunately)
+        # As the width of the health bar is given by the ratio health / maxHealth
         self.playerMaxHealth: int = 1
         self.playerHealth: int = 1
 
         self.log: list = []
         self.logLength: int = 15
 
-        #Attributes for the health bar
+        # Attributes for the health bar
         self.Font = pygame.font.SysFont("Impact", 20)
         self.textOffset: int = 5
         self.healthX: int = 10
@@ -31,8 +33,8 @@ class Logger:
             self.log.pop(0)
 
     def Render(self, screen):
-        #draw.rect(screen, (r,g,b), (posX, posY, width, height))
-        pygame.draw.rect(screen, (100,100,100), (self.position, 0, self.width, self.height))
+        # draw.rect(screen, (r,g,b), (posX, posY, width, height))
+        pygame.draw.rect(screen, (100, 100, 100), (self.position, 0, self.width, self.height))
         pygame.draw.rect(screen, (0, 0, 0), (self.position, self.Font.get_height() * self.logLength + self.textOffset, self.width, 4))
         # Draws three rectangles for the health bar, Health bar in green, back in red, and border in black
         # Border
@@ -48,11 +50,11 @@ class Logger:
         screen.blit(healthText, (self.position + self.healthX + self.healthBarWidth / 2 - healthText.get_width() / 2,
                                  self.healthY - self.healthOffset / 4))
 
-        #Log
+        # Log
         for i in range(0, len(self.log)):
             screen.blit(self.log[i], (self.position + 5, self.Font.get_height() * i + self.textOffset))
 
-        #pygame.draw.rect(screen, (0, 0, 0), (self.position, self.Font.get_height() * self.logAmount + self.textOffset, self.width, 4))
+        # pygame.draw.rect(screen, (0, 0, 0), (self.position, self.Font.get_height() * self.logAmount + self.textOffset, self.width, 4))
 
     def logDeath(self, entity: str):
         msg = str(entity) + ' was killed.'
@@ -61,7 +63,7 @@ class Logger:
 
     def logCombat(self, attacker: str, defender: str, damage: int):
         msg = str(attacker) + ' hit ' + str(defender) + ' for ' + str(damage) + '.'
-        pygMsg = self.Font.render(msg, True, (0,0,0))
+        pygMsg = self.Font.render(msg, True, (0, 0, 0))
         self.log.append(pygMsg)
 
     def logDamage(self, entity: str, Damage: int):

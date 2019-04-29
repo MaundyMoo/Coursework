@@ -1,6 +1,7 @@
 import sqlite3 as sql
 import Constants, pygame
 
+
 class Database:
     def __init__(self):
         # Connects to the database file
@@ -95,6 +96,7 @@ class Database:
         '''Returns the controls of a control profile using the control label'''
         self.cur.execute('''SELECT KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT FROM Controls WHERE Label = ?''', (controlLabel,))
         return self.cur.fetchone()
+
     def read_controls_player(self, playerName: str) -> tuple:
         '''Returns the controls of a given player profile using an Inner Join'''
         self.cur.execute('''

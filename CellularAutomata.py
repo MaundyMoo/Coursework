@@ -1,5 +1,7 @@
 from random import random, choice
 import queue
+
+
 # Creates/Seeds a random 2D array with true or false values for alive or dead cells
 def generateRandomList(width: int, height: int, chance: float) -> list:
     map = []
@@ -13,6 +15,7 @@ def generateRandomList(width: int, height: int, chance: float) -> list:
             row.append(tile)
         map.append(row)
     return map
+
 
 # Iterates through each cell and determines whether it lives or dies and creates a new map based on this
 def stepSimulation(map: list, deathLimit: int, birthLimit: int):
@@ -31,7 +34,9 @@ def stepSimulation(map: list, deathLimit: int, birthLimit: int):
                 else:
                     newMap[y][x] = False
     return newMap
-#Returns the number of neighbours a cell has, used for calculating whether a cell lives or dies
+
+
+# Returns the number of neighbours a cell has, used for calculating whether a cell lives or dies
 def countLivingNeighbours(map: list, x: int, y: int):
     count = 0
     for i in range(-1, 2):
@@ -46,18 +51,20 @@ def countLivingNeighbours(map: list, x: int, y: int):
                 count += 1
     return count
 
+
 def countCaverns(map: list):
     caverns = []
     for y in range(0, len(map)):
         for x in range(0, len(map[0])):
             # Checks if the cell is True and not already in a cavern
-            if map[y][x] and not any((y,x) in cavern for cavern in caverns):
+            if map[y][x] and not any((y, x) in cavern for cavern in caverns):
                 # Perform the flood fill / BFS
                 caverns.append(IterativeBFS((y, x), map))
             else:
                 # Already counted cell so ignore or the cell is 'dead'
                 continue
     return caverns
+
 
 def IterativeBFS(point: tuple, map: list):
     q = queue.Queue()
@@ -68,7 +75,7 @@ def IterativeBFS(point: tuple, map: list):
         if not (y, x) in cavern:
             cavern.append((y, x))
 
-            if not y == len(map)-1:
+            if not y == len(map) - 1:
                 if map[y + 1][x] and not (y + 1, x) in cavern:
                     q.put((y + 1, x))
 
@@ -76,7 +83,7 @@ def IterativeBFS(point: tuple, map: list):
                 if map[y - 1][x] and not (y - 1, x) in cavern:
                     q.put((y - 1, x))
 
-            if not x == len(map[0])-1:
+            if not x == len(map[0]) - 1:
                 if map[y][x + 1] and not (y, x + 1) in cavern:
                     q.put((y, x + 1))
 
@@ -85,11 +92,12 @@ def IterativeBFS(point: tuple, map: list):
                     q.put((y, x - 1))
     return cavern
 
+
 def placeCorridors(map: list, caverns: list):
     if len(caverns) > 1:
-        for i in range(0, len(caverns)-1):
+        for i in range(0, len(caverns) - 1):
             y1, x1 = choice(caverns[i])
-            y2, x2 = choice(caverns[i+1])
+            y2, x2 = choice(caverns[i + 1])
             # Connect on x axis
             if x1 < x2:
                 for i in range(x1, x2 + 1):
@@ -104,6 +112,7 @@ def placeCorridors(map: list, caverns: list):
                 for i in range(y2, y1 + 1):
                     map[i][x2] = True
     return map
+
 
 def driver(width: int, height: int,
            chance: float, steps: int,
