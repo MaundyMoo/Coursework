@@ -127,22 +127,10 @@ class SettingsScene(TitleScene):
         self.playerInput = False
         self.textinput = pygame_textinput.TextInput(font_family="Lucida Console", font_size=56, initial_string="Name")
 
+        self.controlInput = False
+
     def InputControl(self):
-        # prevents pygame from adding these events
-        # MOUSEMOTION is for detecting mouseinputs
-        # KEYUP is any key that is released and not pressed
-        # ACTIVEEVENT is run when the window regains focus from the Operating System
-        unbindableEvents = [pygame.MOUSEMOTION, pygame.KEYUP, pygame.ACTIVEEVENT]
-        pygame.event.set_blocked(unbindableEvents)
-        controls = []
-        while not len(controls) == 4:
-            # Clears the event buffer
-            bind = pygame.event.clear()
-            bind = pygame.event.wait()
-            if not bind in controls:
-                # .key is the attribute that holds the value for the key pressed
-                controls.append(bind.key)
-        self.Database.create_controls('TEST',*controls)
+        self.controlInput = not self.controlInput
 
     def InputPlayer(self):
         if not self.playerInput:
@@ -159,6 +147,37 @@ class SettingsScene(TitleScene):
 
     def Render(self, screen):
         super().Render(screen)
+        self.DrawUI(screen)
+        # Control Inputs
+        if self.controlInput:
+            # prevents pygame from adding these events
+            # MOUSEMOTION is for detecting mouseinputs
+            # KEYUP is any key that is released and not pressed
+            # ACTIVEEVENT is run when the window regains focus from the Operating System
+            unbindableEvents = [pygame.MOUSEMOTION, pygame.KEYUP, pygame.ACTIVEEVENT]
+            pygame.event.set_blocked(unbindableEvents)
+            controls = []
+            self.controlTexts = [self.Font.render('', True, (0,0,0)),
+                                 self.Font.render('', True, (0,0,0)),
+                                 self.Font.render('', True, (0,0,0)),
+                                 self.Font.render('', True, (0,0,0))]
+            counter = 0
+            while not len(controls) == 4:
+                super().Render(screen)
+                self.DrawUI(screen)
+                pygame.display.update()
+                # Clears the event buffer
+                bind = pygame.event.clear()
+                bind = pygame.event.wait()
+                if not bind in controls:
+                    # .key is the attribute that holds the value for the key pressed
+                    controls.append(bind.key)
+                self.controlTexts[counter] = self.Font.render(str(pygame.key.name(bind.key)), True, (0,0,0))
+                counter += 1
+            self.Database.create_controls('TEST', *controls)
+            self.controlInput = False
+
+    def DrawUI(self, screen):
         # Draws a border where the controls / profile information will be shown
         pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
 
