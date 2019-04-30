@@ -1,5 +1,6 @@
 import sqlite3 as sql
-import Constants, pygame
+
+import Constants
 
 
 class Database:
@@ -89,6 +90,13 @@ class Database:
         '''Returns a list of all player profile names'''
         self.cur.execute('''
         SELECT UserName FROM Players
+        ''')
+        return self.cur.fetchall()
+
+    def get_controls(self) -> tuple:
+        '''Returns a list of all player profile names'''
+        self.cur.execute('''
+        SELECT ID, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT FROM Controls
         ''')
         return self.cur.fetchall()
 

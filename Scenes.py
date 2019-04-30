@@ -1,5 +1,7 @@
 from random import choice
 
+import pygame
+
 import Constants
 import DatabaseHandler
 import Entities
@@ -7,7 +9,6 @@ import Image
 import Mapper
 import Pathfinding
 import Tiles
-import pygame
 import pygame_textinput
 
 
@@ -137,17 +138,27 @@ class SettingsScene(TitleScene):
         self.textinput = pygame_textinput.TextInput(font_family="Lucida Console", font_size=56, initial_string="Name")
 
         self.controlInput = False
+        self.controlSelect = False
+        self.controlPointer = 0
+        self.controlsDatabase = self.Database.get_controls()
 
     def InputControl(self):
         self.controlInput = not self.controlInput
 
     def InputPlayer(self):
-        if not self.playerInput:
+        # Enter Username
+        if not self.playerInput and not self.controlSelect:
             self.playerInput = True
-        else:
+        # Select Controls
+        elif self.playerInput and not self.controlSelect:
+            self.controlSelect = True
             self.playerInput = False
-            self.Database.create_player(self.textinput.get_text())
+        # Set all to false
+        else:
+            self.Database.create_player(self.textinput.get_text(), self.controlsDatabase[self.controlPointer][0])
             self.players = self.Database.get_players()
+            self.playerInput = False
+            self.controlSelect = False
 
     def MainMenu(self):
         Constants.PlayerControls = self.controls
@@ -184,6 +195,7 @@ class SettingsScene(TitleScene):
                 self.controlTexts[counter] = self.Font.render(str(pygame.key.name(bind.key)), True, (0, 0, 0))
                 counter += 1
             self.Database.create_controls('TEST', *controls)
+            self.controlsDatabase = self.Database.get_controls()
             self.controlInput = False
 
     def DrawUI(self, screen):
@@ -213,16 +225,23 @@ class SettingsScene(TitleScene):
         else:
             self.menuPointer = 1
             screen.blit(self.textinput.get_surface(), ((Constants.SCREEN_WIDTH * 3) / 4 - self.textinput.get_surface().get_width() / 2, 15))
+        if self.controlSelect: self.menuPointer = 1
 
     def ProcessInputs(self, events, pressed_keys):
         super().ProcessInputs(events, pressed_keys)
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.playerPointer -= 1
-                elif event.key == pygame.K_RIGHT:
-                    self.playerPointer += 1
-                elif event.key == pygame.K_ESCAPE:
+                if not self.controlSelect:
+                    if event.key == pygame.K_LEFT:
+                        self.playerPointer -= 1
+                    elif event.key == pygame.K_RIGHT:
+                        self.playerPointer += 1
+                else:
+                    if event.key == pygame.K_LEFT:
+                        self.controlPointer -= 1
+                    elif event.key == pygame.K_RIGHT:
+                        self.controlPointer += 1
+                if event.key == pygame.K_ESCAPE:
                     self.MainMenu()
         if self.playerInput:
             self.textinput.update(events)
@@ -231,13 +250,25 @@ class SettingsScene(TitleScene):
         super().Update()
         if self.playerPointer == -1: self.playerPointer = len(self.players) - 1
         if self.playerPointer == len(self.players): self.playerPointer = 0
+
+        if self.controlPointer == -1: self.controlPointer = len(self.controlsDatabase) - 1
+        if self.controlPointer == len(self.controlsDatabase): self.controlPointer = 0
+
         # Updates the text to be shown
-        self.playerText = self.Font.render((self.players[self.playerPointer][0]), True, (0, 0, 0))
-        self.controls = self.Database.read_controls_player(self.players[self.playerPointer][0])
-        self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
-                             self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
-                             self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
-                             self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
+        if not self.controlSelect:
+            self.playerText = self.Font.render((self.players[self.playerPointer][0]), True, (0, 0, 0))
+            self.controls = self.Database.read_controls_player(self.players[self.playerPointer][0])
+            self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
+        else:
+            self.playerText = self.Font.render(self.textinput.get_text(), True, (0, 0, 0))
+            self.controls = self.Database.get_controls()[self.controlPointer][1::]
+            self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
 
 
 class GameScene(SceneBase):

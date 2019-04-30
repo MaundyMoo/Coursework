@@ -125,6 +125,8 @@ class TextInput:
                     del self.keyrepeat_counters[event.key]
 
         # Update key counters:
+        # NOT PART OF THE LIBARY, I JUST REMOVED THIS CODE
+        '''
         for key in self.keyrepeat_counters:
             self.keyrepeat_counters[key][0] += self.clock.get_time()  # Update clock
 
@@ -138,7 +140,7 @@ class TextInput:
                 event_key, event_unicode = key, self.keyrepeat_counters[key][1]
                 if not event_key == 13:
                     pygame.event.post(pygame.event.Event(pl.KEYDOWN, key=event_key, unicode=event_unicode))
-
+        '''
         # Re-render text surface:
         self.surface = self.font_object.render(self.input_string, self.antialias, self.text_color)
 
