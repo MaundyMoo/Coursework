@@ -1,5 +1,14 @@
-import pygame, Image, Tiles, Constants, Entities, Pathfinding, Mapper, DatabaseHandler, pygame_textinput
 from random import choice
+
+import Constants
+import DatabaseHandler
+import Entities
+import Image
+import Mapper
+import Pathfinding
+import Tiles
+import pygame
+import pygame_textinput
 
 
 class SceneBase:
@@ -157,10 +166,10 @@ class SettingsScene(TitleScene):
             unbindableEvents = [pygame.MOUSEMOTION, pygame.KEYUP, pygame.ACTIVEEVENT]
             pygame.event.set_blocked(unbindableEvents)
             controls = []
-            self.controlTexts = [self.Font.render('', True, (0,0,0)),
-                                 self.Font.render('', True, (0,0,0)),
-                                 self.Font.render('', True, (0,0,0)),
-                                 self.Font.render('', True, (0,0,0))]
+            self.controlTexts = [self.Font.render('', True, (0, 0, 0)),
+                                 self.Font.render('', True, (0, 0, 0)),
+                                 self.Font.render('', True, (0, 0, 0)),
+                                 self.Font.render('', True, (0, 0, 0))]
             counter = 0
             while not len(controls) == 4:
                 super().Render(screen)
@@ -172,7 +181,7 @@ class SettingsScene(TitleScene):
                 if not bind in controls:
                     # .key is the attribute that holds the value for the key pressed
                     controls.append(bind.key)
-                self.controlTexts[counter] = self.Font.render(str(pygame.key.name(bind.key)), True, (0,0,0))
+                self.controlTexts[counter] = self.Font.render(str(pygame.key.name(bind.key)), True, (0, 0, 0))
                 counter += 1
             self.Database.create_controls('TEST', *controls)
             self.controlInput = False
