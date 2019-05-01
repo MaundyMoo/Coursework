@@ -38,6 +38,8 @@ def generateCellularAutomata(width: int = 26,
                                       sprite=spritesheet.returnSprite(0, 2)))
             '''
         tileMap.append(row)
+    y, x = choice(caverns[-1])
+    tileMap[y][x] = Tiles.LevelTile(gridPos = (x, y), sprite = spritesheet.returnSprite(0, 2))
     return tileMap, caverns
 
 

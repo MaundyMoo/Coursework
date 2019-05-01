@@ -5,7 +5,7 @@ SCREEN_HEIGHT = 64 * 11
 LOG_WIDTH = 64 * 4
 GAME_WIDTH = SCREEN_WIDTH - LOG_WIDTH
 
-TILESIZE = 32
+TILESIZE = 64
 
 PlayerControls = [273, 274, 276, 275]
 playerName = 'Default'

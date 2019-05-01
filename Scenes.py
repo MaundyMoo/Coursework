@@ -296,6 +296,7 @@ class GameScene(SceneBase):
 
         self.player = Entities.Player(x=playerPos[1], y=playerPos[0], map=self.TileMap)
         self.graph = Pathfinding.Graph(self.TileMap)
+        self.offsetScene()
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
@@ -336,10 +337,10 @@ class GameScene(SceneBase):
         if not self.backRendered: self.backRender(screen)
         for tiles in self.animTiles: tiles.Render(screen, self.OffsetX, self.OffsetY)
         self.TileMap[self.player.getPosition()[0]][self.player.getPosition()[1]].Render(screen, self.OffsetX, self.OffsetY)
-        self.player.Render(screen, self.OffsetX, self.OffsetY)
         for entity in self.Entities:
             self.TileMap[entity.getPosition()[0]][entity.getPosition()[1]].Render(screen, self.OffsetX, self.OffsetY)
             entity.Render(screen, self.OffsetX, self.OffsetY)
+        self.player.Render(screen, self.OffsetX, self.OffsetY)
 
     def offsetScene(self):
         # Getting map dimensions, both tile and pixel dimensions

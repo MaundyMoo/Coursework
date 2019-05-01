@@ -35,3 +35,13 @@ class AnimTile(Tile):
         if self.tick >= self.animLength:
             self.tick = 0
         self.sprite = self.SpriteSheet.returnSprite((self.tick // self.interval) + self.offset, self.row)
+
+
+class LevelTile(Tile):
+    def __init__(self, gridPos: tuple, sprite):
+        super().__init__(gridPos=gridPos, collision=False, sprite=sprite)
+
+
+class AnimLevelTile(AnimTile):
+    def __init__(self, gridPos: tuple, SpriteSheet, row: int, frames: int, interval: int, offset: int = 0):
+        super().__init__(gridPos, False, SpriteSheet, row, frames, interval, offset)
