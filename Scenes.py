@@ -82,10 +82,11 @@ class TitleScene(SceneBase):
     def ProcessInputs(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.KEYDOWN:
-                self.Sound.PlaySound('res/SFX/menu.wav')
                 if event.key == pygame.K_UP:
+                    self.Sound.PlaySound('res/SFX/menu.wav')
                     self.menuPointer -= 1
                 elif event.key == pygame.K_DOWN:
+                    self.Sound.PlaySound('res/SFX/menu.wav')
                     self.menuPointer += 1
                 if event.key == pygame.K_RETURN:
                     # Calls the function held in the dictionary
@@ -237,13 +238,17 @@ class SettingsScene(TitleScene):
             if event.type == pygame.KEYDOWN:
                 if not self.controlSelect:
                     if event.key == pygame.K_LEFT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
                         self.playerPointer -= 1
                     elif event.key == pygame.K_RIGHT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
                         self.playerPointer += 1
                 else:
                     if event.key == pygame.K_LEFT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
                         self.controlPointer -= 1
                     elif event.key == pygame.K_RIGHT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
                         self.controlPointer += 1
                 if event.key == pygame.K_ESCAPE:
                     self.MainMenu()
@@ -300,6 +305,10 @@ class GameScene(SceneBase):
 
         self.player = Entities.Player(x=playerPos[1], y=playerPos[0], map=self.TileMap)
         self.graph = Pathfinding.Graph(self.TileMap)
+
+        self.Sound = SoundHandler.Sound()
+        self.Sound.PlayMusic('res/SFX/music.wav')
+
         self.offsetScene()
 
     def ProcessInputs(self, events, pressedKeys):

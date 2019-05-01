@@ -1,4 +1,4 @@
-import Constants, pygame, Image, Logger
+import Constants, pygame, Image, Logger, SoundHandler
 
 
 class Entity:
@@ -24,6 +24,8 @@ class Entity:
         self.tick = 0
         # A default sprite so the program has something to render on the first frame
         self.sprite = self.spritesheet.returnSprite(0, self.row)
+
+        self.Sound = SoundHandler.Sound()
 
     def __str__(self):
         return self.name
@@ -82,6 +84,7 @@ class Player(Entity):
 
     def move(self, dX: int, dY: int, entities: list):
         # Checks for collions at the boundaries of the screen/map
+        self.Sound.PlaySound('res/SFX/footstep.wav')
         if self.y + dY < 0 or self.x + dX < 0:
             dX, dY = 0, 0
         elif self.y + dY > (len(self.map) - 1) or self.x + dX > (len(self.map[0]) - 1):
@@ -99,6 +102,7 @@ class Player(Entity):
         self.y = self.y + dY
 
     def combat(self, enemy):
+        self.Sound.PlaySound('res/SFX/attack.wav')
         if enemy.currentHealth < self.attack:
             enemy.die()
             self.logger.logCombat(attacker=self, defender=enemy, damage=self.attack)
@@ -112,6 +116,7 @@ class Player(Entity):
                 self.logger.logCombat(attacker=enemy, defender=self, damage=enemy.attack)
 
     def attacked(self, enemy):
+        self.Sound.PlaySound('res/SFX/enemy_attack.wav')
         self.currentHealth -= enemy.attack
         self.logger.logCombat(enemy, self, enemy.attack)
 
