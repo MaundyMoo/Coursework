@@ -10,6 +10,7 @@ import Mapper
 import Pathfinding
 import Tiles
 import pygame_textinput
+import SoundHandler
 
 
 class SceneBase:
@@ -54,6 +55,8 @@ class TitleScene(SceneBase):
         }
         self.menu = []
 
+        self.Sound = SoundHandler.Sound()
+
     # Methods used as wrappers to call functions from the dictionary
     # As I cannot parse values through and this allows me to add extra
     # functionality if needed
@@ -79,6 +82,7 @@ class TitleScene(SceneBase):
     def ProcessInputs(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.KEYDOWN:
+                self.Sound.PlaySound('res/SFX/menu.wav')
                 if event.key == pygame.K_UP:
                     self.menuPointer -= 1
                 elif event.key == pygame.K_DOWN:
@@ -332,6 +336,10 @@ class GameScene(SceneBase):
         for entity in self.Entities:
             entity.Update()
             if entity.isDead: self.Entities.remove(entity)
+
+        if type(self.TileMap[self.player.y][self.player.x]) == Tiles.LevelTile \
+                or type(self.TileMap[self.player.y][self.player.x]) == Tiles.AnimLevelTile:
+            self.SwitchScene(GameScene(self.WIDTH, self.HEIGHT))
 
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)

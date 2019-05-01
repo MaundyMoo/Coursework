@@ -46,7 +46,7 @@ def generateCellularAutomata(width: int = 26,
 def placeEnemiesCellular(caverns) -> list:
     positions = []
     for cavern in caverns:
-        for i in range(0, len(cavern) % 5):
+        for i in range(0, len(cavern) // 30):
             location = choice(cavern)
             if not location in positions:
                 positions.append(location)
