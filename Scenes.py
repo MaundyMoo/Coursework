@@ -14,9 +14,8 @@ import SoundHandler
 
 
 class SceneBase:
-    def __init__(self, WIDTH: int, HEIGHT: int):
+    def __init__(self):
         self.next = self
-        self.WIDTH, self.HEIGHT = WIDTH, HEIGHT
 
     def Update(self):
         pass
@@ -35,8 +34,8 @@ class SceneBase:
 
 
 class TitleScene(SceneBase):
-    def __init__(self, WIDTH: int, HEIGHT: int):
-        super().__init__(WIDTH, HEIGHT)
+    def __init__(self):
+        super().__init__()
         self.Font = pygame.font.SysFont("Lucida Console", 56)
         self.TitleFont = pygame.font.SysFont("Lucida Console", 82)
         self.backgroundColour = (80, 180, 100)
@@ -61,10 +60,10 @@ class TitleScene(SceneBase):
     # As I cannot parse values through and this allows me to add extra
     # functionality if needed
     def start(self):
-        self.SwitchScene(GameScene(self.WIDTH, self.HEIGHT))
+        self.SwitchScene(GameScene())
 
     def settings(self):
-        self.SwitchScene(SettingsScene(self.WIDTH, self.HEIGHT))
+        self.SwitchScene(SettingsScene())
 
     def exit(self):
         self.Terminate()
@@ -88,8 +87,9 @@ class TitleScene(SceneBase):
                 elif event.key == pygame.K_DOWN:
                     self.Sound.PlaySound('res/SFX/menu.wav')
                     self.menuPointer += 1
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                     # Calls the function held in the dictionary
+                    self.Sound.PlaySound('res/SFX/menu.wav')
                     self.dictOptions[self.menuPointer][1]()
 
     def Render(self, screen):
@@ -104,8 +104,8 @@ class TitleScene(SceneBase):
 
 
 class SettingsScene(TitleScene):
-    def __init__(self, WIDTH: int, HEIGHT: int):
-        super().__init__(WIDTH, HEIGHT)
+    def __init__(self):
+        super().__init__()
         self.backgroundColour = (200, 150, 100)
         self.Database = DatabaseHandler.Database()
 
@@ -119,7 +119,7 @@ class SettingsScene(TitleScene):
         }
         # Rectangle used as border
         # Rect((left, top), (width, height))
-        self.control_border = pygame.Rect((Constants.SCREEN_WIDTH / 2) - 5, 5, Constants.SCREEN_WIDTH / 2, self.HEIGHT - 10)
+        self.control_border = pygame.Rect((Constants.SCREEN_WIDTH / 2) - 5, 5, Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT - 10)
 
         self.players = self.Database.get_players()
         self.playerPointer = 0
@@ -168,7 +168,83 @@ class SettingsScene(TitleScene):
     def MainMenu(self):
         Constants.PlayerControls = self.controls
         Constants.playerName = self.players[self.playerPointer][0]
-        self.SwitchScene(TitleScene(self.WIDTH, self.HEIGHT))
+        self.SwitchScene(TitleScene())
+
+    def DrawUI(self, screen):
+        # Draws a border where the controls / profile information will be shown
+        pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
+
+        screen.blit(self.leftArrow,
+                    (Constants.SCREEN_WIDTH / 2 + 15,
+                     15))
+        screen.blit(self.rightArrow,
+                    (Constants.SCREEN_WIDTH - self.rightArrow.get_width() - 15,
+                     15))
+
+        for i in range(0, len(self.bindingsText)):
+            screen.blit(self.bindingsText[i],
+                        (Constants.SCREEN_WIDTH / 2 + 15,
+                         15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
+
+        if not self.playerInput:
+            screen.blit(self.playerText, ((Constants.SCREEN_WIDTH * 3) / 4 - self.playerText.get_width() / 2, 15))
+
+            for i in range(0, len(self.controlTexts)):
+                screen.blit(self.controlTexts[i],
+                            (Constants.SCREEN_WIDTH / 2 + 15 + self.bindingsText[0].get_width(),
+                             15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
+
+        else:
+            self.menuPointer = 1
+            screen.blit(self.textinput.get_surface(), ((Constants.SCREEN_WIDTH * 3) / 4 - self.textinput.get_surface().get_width() / 2, 15))
+        if self.controlSelect: self.menuPointer = 1
+
+    def Update(self):
+        super().Update()
+        if self.playerPointer == -1: self.playerPointer = len(self.players) - 1
+        if self.playerPointer == len(self.players): self.playerPointer = 0
+
+        if self.controlPointer == -1: self.controlPointer = len(self.controlsDatabase) - 1
+        if self.controlPointer == len(self.controlsDatabase): self.controlPointer = 0
+
+        # Updates the text to be shown
+        if not self.controlSelect:
+            self.playerText = self.Font.render((self.players[self.playerPointer][0]), True, (0, 0, 0))
+            self.controls = self.Database.read_controls_player(self.players[self.playerPointer][0])
+            self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
+        else:
+            self.playerText = self.Font.render(self.textinput.get_text(), True, (0, 0, 0))
+            self.controls = self.Database.get_controls()[self.controlPointer][1::]
+            self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
+                                 self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
+
+    def ProcessInputs(self, events, pressed_keys):
+        super().ProcessInputs(events, pressed_keys)
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if not self.controlSelect:
+                    if event.key == pygame.K_LEFT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
+                        self.playerPointer -= 1
+                    elif event.key == pygame.K_RIGHT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
+                        self.playerPointer += 1
+                else:
+                    if event.key == pygame.K_LEFT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
+                        self.controlPointer -= 1
+                    elif event.key == pygame.K_RIGHT:
+                        self.Sound.PlaySound('res/SFX/menu.wav')
+                        self.controlPointer += 1
+                if event.key == pygame.K_ESCAPE:
+                    self.MainMenu()
+        if self.playerInput:
+            self.textinput.update(events)
 
     def Render(self, screen):
         super().Render(screen)
@@ -203,85 +279,9 @@ class SettingsScene(TitleScene):
             self.controlsDatabase = self.Database.get_controls()
             self.controlInput = False
 
-    def DrawUI(self, screen):
-        # Draws a border where the controls / profile information will be shown
-        pygame.draw.rect(screen, (0, 0, 0), self.control_border, 10)
-
-        screen.blit(self.leftArrow,
-                    (Constants.SCREEN_WIDTH / 2 + 15,
-                     15))
-        screen.blit(self.rightArrow,
-                    (Constants.SCREEN_WIDTH - self.rightArrow.get_width() - 15,
-                     15))
-
-        for i in range(0, len(self.bindingsText)):
-            screen.blit(self.bindingsText[i],
-                        (Constants.SCREEN_WIDTH / 2 + 15,
-                         15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
-
-        if not self.playerInput:
-            screen.blit(self.playerText, ((Constants.SCREEN_WIDTH * 3) / 4 - self.playerText.get_width() / 2, 15))
-
-            for i in range(0, len(self.controlTexts)):
-                screen.blit(self.controlTexts[i],
-                            (Constants.SCREEN_WIDTH / 2 + 15 + self.bindingsText[0].get_width(),
-                             15 + self.playerText.get_height() + self.controlTexts[i].get_height() * i))
-
-        else:
-            self.menuPointer = 1
-            screen.blit(self.textinput.get_surface(), ((Constants.SCREEN_WIDTH * 3) / 4 - self.textinput.get_surface().get_width() / 2, 15))
-        if self.controlSelect: self.menuPointer = 1
-
-    def ProcessInputs(self, events, pressed_keys):
-        super().ProcessInputs(events, pressed_keys)
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if not self.controlSelect:
-                    if event.key == pygame.K_LEFT:
-                        self.Sound.PlaySound('res/SFX/menu.wav')
-                        self.playerPointer -= 1
-                    elif event.key == pygame.K_RIGHT:
-                        self.Sound.PlaySound('res/SFX/menu.wav')
-                        self.playerPointer += 1
-                else:
-                    if event.key == pygame.K_LEFT:
-                        self.Sound.PlaySound('res/SFX/menu.wav')
-                        self.controlPointer -= 1
-                    elif event.key == pygame.K_RIGHT:
-                        self.Sound.PlaySound('res/SFX/menu.wav')
-                        self.controlPointer += 1
-                if event.key == pygame.K_ESCAPE:
-                    self.MainMenu()
-        if self.playerInput:
-            self.textinput.update(events)
-
-    def Update(self):
-        super().Update()
-        if self.playerPointer == -1: self.playerPointer = len(self.players) - 1
-        if self.playerPointer == len(self.players): self.playerPointer = 0
-
-        if self.controlPointer == -1: self.controlPointer = len(self.controlsDatabase) - 1
-        if self.controlPointer == len(self.controlsDatabase): self.controlPointer = 0
-
-        # Updates the text to be shown
-        if not self.controlSelect:
-            self.playerText = self.Font.render((self.players[self.playerPointer][0]), True, (0, 0, 0))
-            self.controls = self.Database.read_controls_player(self.players[self.playerPointer][0])
-            self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
-                                 self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
-                                 self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
-                                 self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
-        else:
-            self.playerText = self.Font.render(self.textinput.get_text(), True, (0, 0, 0))
-            self.controls = self.Database.get_controls()[self.controlPointer][1::]
-            self.controlTexts = [self.Font.render(pygame.key.name(self.controls[0]), True, (0, 0, 0)),
-                                 self.Font.render(pygame.key.name(self.controls[1]), True, (0, 0, 0)),
-                                 self.Font.render(pygame.key.name(self.controls[2]), True, (0, 0, 0)),
-                                 self.Font.render(pygame.key.name(self.controls[3]), True, (0, 0, 0))]
-
 
 class GameScene(SceneBase):
-    def __init__(self, WIDTH: int, HEIGHT: int):
+    def __init__(self, Sound=None):
 
         self.spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
         self.OffsetX, self.OffsetY = 0, 0
@@ -291,7 +291,7 @@ class GameScene(SceneBase):
 
         self.Entities = []
 
-        super().__init__(WIDTH, HEIGHT)
+        super().__init__()
 
         self.TileMap, caverns = Mapper.generateCellularAutomata()
         self.entitypositions = Mapper.placeEnemiesCellular(caverns)
@@ -310,6 +310,18 @@ class GameScene(SceneBase):
         self.Sound.PlayMusic('res/SFX/music.wav')
 
         self.offsetScene()
+
+    def Update(self):
+        for tiles in self.animTiles: tiles.Update()
+        self.player.Update()
+        if self.player.isDead: self.SwitchScene(EndScene())
+        for entity in self.Entities:
+            entity.Update()
+            if entity.isDead: self.Entities.remove(entity)
+
+        if type(self.TileMap[self.player.y][self.player.x]) == Tiles.LevelTile \
+                or type(self.TileMap[self.player.y][self.player.x]) == Tiles.AnimLevelTile:
+            self.SwitchScene(GameScene())
 
     def ProcessInputs(self, events, pressedKeys):
         for event in events:
@@ -337,18 +349,6 @@ class GameScene(SceneBase):
                         entity.move(path, self.Entities, self.player)
                 self.offsetScene()
                 self.backRendered = False
-
-    def Update(self):
-        for tiles in self.animTiles: tiles.Update()
-        self.player.Update()
-        if self.player.isDead: self.Terminate()
-        for entity in self.Entities:
-            entity.Update()
-            if entity.isDead: self.Entities.remove(entity)
-
-        if type(self.TileMap[self.player.y][self.player.x]) == Tiles.LevelTile \
-                or type(self.TileMap[self.player.y][self.player.x]) == Tiles.AnimLevelTile:
-            self.SwitchScene(GameScene(self.WIDTH, self.HEIGHT))
 
     def Render(self, screen):
         if not self.backRendered: self.backRender(screen)
@@ -391,3 +391,23 @@ class GameScene(SceneBase):
                 if type(self.TileMap[y][x]) == Tiles.AnimTile: self.animTiles.append(self.TileMap[y][x])
                 self.TileMap[y][x].Render(screen, self.OffsetX, self.OffsetY)
         self.backRendered = True
+
+
+class EndScene(SceneBase):
+    def __init__(self):
+        super().__init__()
+        self.TitleFont = pygame.font.SysFont("Lucida Console", 82)
+        self.Font = pygame.font.SysFont("Lucida Console", 56)
+        self.endtitle = self.TitleFont.render('Game Over', True, (200, 40, 20))
+        self.endmsg = self.Font.render('Press Enter/Space to Continue', True, (150, 150, 150))
+
+    def ProcessInputs(self, events, pressed_keys):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    self.SwitchScene(TitleScene())
+
+    def Render(self, screen):
+        screen.fill((0, 0, 0))
+        screen.blit(self.endtitle, (Constants.SCREEN_WIDTH / 2 - self.endtitle.get_width() / 2, 20))
+        screen.blit(self.endmsg, (10, 200))

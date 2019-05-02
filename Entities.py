@@ -75,6 +75,7 @@ class Player(Entity):
     def Update(self):
         super().Update()
         if self.currentHealth <= 0:
+            self.Sound.PlaySound('res/SFX/death.wav')
             self.isDead = True
         self.logger.Update(self.currentHealth, self.maxHealth)
 
@@ -84,7 +85,6 @@ class Player(Entity):
 
     def move(self, dX: int, dY: int, entities: list):
         # Checks for collions at the boundaries of the screen/map
-        self.Sound.PlaySound('res/SFX/footstep.wav')
         if self.y + dY < 0 or self.x + dX < 0:
             dX, dY = 0, 0
         elif self.y + dY > (len(self.map) - 1) or self.x + dX > (len(self.map[0]) - 1):
@@ -98,6 +98,7 @@ class Player(Entity):
                 if (self.y + dY, self.x + dX) == entity.getPosition() and issubclass(type(entity), Enemy):
                     dX, dY = 0, 0
                     self.combat(entity)
+        if not (dX == 0 and dY == 0): self.Sound.PlaySound('res/SFX/footstep.wav')
         self.x = self.x + dX
         self.y = self.y + dY
 

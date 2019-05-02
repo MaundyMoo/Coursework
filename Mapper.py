@@ -7,8 +7,8 @@ from random import choice
 spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
 
 
-def generateCellularAutomata(width: int = 26,
-                             height: int = 22,
+def generateCellularAutomata(width: int = 200,
+                             height: int = 200,
                              chance: float = 0.65,
                              steps: int = 2,
                              birthLimit: int = 3,

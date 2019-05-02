@@ -15,3 +15,4 @@ class Sound:
 
     def PlaySound(self, path: str):
         pygame.mixer.Sound(Constants.getPath(path)).play()
+
