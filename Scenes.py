@@ -8,9 +8,9 @@ import Entities
 import Image
 import Mapper
 import Pathfinding
+import SoundHandler
 import Tiles
 import pygame_textinput
-import SoundHandler
 
 
 class SceneBase:
@@ -60,6 +60,7 @@ class TitleScene(SceneBase):
     # As I cannot parse values through and this allows me to add extra
     # functionality if needed
     def start(self):
+        Constants.SCORE = 0
         self.SwitchScene(GameScene())
 
     def settings(self):
@@ -321,6 +322,7 @@ class GameScene(SceneBase):
 
         if type(self.TileMap[self.player.y][self.player.x]) == Tiles.LevelTile \
                 or type(self.TileMap[self.player.y][self.player.x]) == Tiles.AnimLevelTile:
+            Constants.SCORE += 1000
             self.SwitchScene(GameScene())
 
     def ProcessInputs(self, events, pressedKeys):

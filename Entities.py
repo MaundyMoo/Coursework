@@ -135,6 +135,7 @@ class Enemy(Entity):
         self.combat = False
 
         self.agrorange = 8
+        self.scoreval = 100
 
     def Update(self):
         super().Update()
@@ -155,6 +156,7 @@ class Enemy(Entity):
                 player.attacked(self)
 
     def die(self):
+        Constants.SCORE += self.scoreval
         self.isDead = True
 
     def inRange(self, player) -> bool:

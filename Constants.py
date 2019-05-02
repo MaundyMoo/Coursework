@@ -13,6 +13,8 @@ playerName = 'Default'
 # Gets the directory of where the file is being run from
 WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+SCORE = 0
+
 
 # Joins any input path to the working directory
 def getPath(path) -> str:

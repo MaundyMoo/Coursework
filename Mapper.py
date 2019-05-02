@@ -1,14 +1,17 @@
 '''
 Interfaces with map generation algorithms to produce tilemaps
 '''
-import Tiles, CellularAutomata, Image
 from random import choice
+
+import CellularAutomata
+import Image
+import Tiles
 
 spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
 
 
-def generateCellularAutomata(width: int = 200,
-                             height: int = 200,
+def generateCellularAutomata(width: int = 40,
+                             height: int = 30,
                              chance: float = 0.65,
                              steps: int = 2,
                              birthLimit: int = 3,

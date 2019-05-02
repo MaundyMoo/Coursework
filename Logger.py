@@ -2,7 +2,9 @@
 This class is responsable for the majority of the UI elements that
 pertain to player information
 '''
-import pygame, Constants
+import pygame
+
+import Constants
 
 
 class Logger:
@@ -23,8 +25,10 @@ class Logger:
         self.healthX: int = 10
         self.healthBarWidth: int = self.width - self.healthX * 2
         self.healthBarHeight: int = 20
-        self.healthY: int = self.height - self.healthBarHeight * 2
+        self.healthY: int = self.Font.get_height() * self.logLength + self.textOffset + 32
         self.healthOffset: int = 10
+
+        self.healthStr = self.Font.render('Health: ', True, (0, 0, 0))
 
     def Update(self, playerHealth: int, playerMaxHealth: int):
         self.playerHealth = playerHealth
@@ -47,8 +51,13 @@ class Logger:
                                                self.healthBarWidth * (self.playerHealth / self.playerMaxHealth), self.healthBarHeight))
         # Text
         healthText = self.Font.render((str(self.playerHealth) + "/" + str(self.playerMaxHealth)), True, (0, 0, 100))
+        scoreText = self.Font.render('Score: ' + str(Constants.SCORE), True, (0, 0, 0))
         screen.blit(healthText, (self.position + self.healthX + self.healthBarWidth / 2 - healthText.get_width() / 2,
                                  self.healthY - self.healthOffset / 4))
+        screen.blit(self.healthStr, (self.position + self.healthX,
+                                     self.healthY - self.healthOffset - 20))
+        screen.blit(scoreText, (self.position + self.healthX,
+                                self.healthY - self.healthOffset + 35))
 
         # Log
         for i in range(0, len(self.log)):

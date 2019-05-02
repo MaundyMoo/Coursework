@@ -1,4 +1,5 @@
-import pygame, Constants
+import Constants
+import pygame
 
 
 class Sound:
