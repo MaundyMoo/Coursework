@@ -91,6 +91,7 @@ class Player(Entity):
             dX, dY = 0, 0
         # Checks for collisions with tiles that are 'collidable'
         elif self.map[self.y + dY][self.x + dX].isCollidable():
+            self.Sound.PlaySound('res/SFX/footstep.wav')
             dX, dY = 0, 0
         # Checks for collisions with any entities
         else:
