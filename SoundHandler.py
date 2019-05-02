@@ -1,5 +1,6 @@
-import Constants
 import pygame
+
+import Constants
 
 
 class Sound:
@@ -8,7 +9,7 @@ class Sound:
         pygame.mixer.pre_init(22050, -16, 2, 1024)
         pygame.mixer.quit()
         pygame.mixer.init(22050, -16, 2, 1024)
-        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.set_volume(0.2)
 
     def PlayMusic(self, path: str):
         pygame.mixer.music.load(Constants.getPath(path))
@@ -16,4 +17,3 @@ class Sound:
 
     def PlaySound(self, path: str):
         pygame.mixer.Sound(Constants.getPath(path)).play()
-

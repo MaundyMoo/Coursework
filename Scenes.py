@@ -50,7 +50,8 @@ class TitleScene(SceneBase):
         self.dictOptions = {
             0: ('Start', self.start),
             1: ('Settings', self.settings),
-            2: ('Exit', self.exit)
+            2: ('Leaderboard', self.leaderboard),
+            3: ('Exit', self.exit)
         }
         self.menu = []
 
@@ -65,6 +66,9 @@ class TitleScene(SceneBase):
 
     def settings(self):
         self.SwitchScene(SettingsScene())
+
+    def leaderboard(self):
+        self.SwitchScene(ScoreScene())
 
     def exit(self):
         self.Terminate()
@@ -102,6 +106,38 @@ class TitleScene(SceneBase):
         # Draws each option to the screen
         for i in range(0, len(self.menu)):
             screen.blit(self.menu[i], (20, self.Font.get_height() * i + self.offset))
+
+
+class ScoreScene(SceneBase):
+    def __init__(self):
+        super().__init__()
+        Database = DatabaseHandler.Database()
+        self.scores = Database.read_scores()
+        self.scoreRender = []
+        self.Font = pygame.font.SysFont("Lucida Console", 56)
+        self.TitleFont = pygame.font.SysFont("Lucida Console", 56)
+
+        self.TItle = self.TitleFont.render('Leaderboard', True, (0, 0, 0))
+
+        if not len(self.scores) == 0:
+            amount = 5 if len(self.scores) > 5 else len(self.scores)
+
+            for i in range(0, amount):
+                self.scoreRender.append(self.Font.render(str(i + 1) + ': ' + str(self.scores[i][0]) + ', ' + str(self.scores[i][1]), True, (0, 0, 0)))
+        else:
+            self.scoreRender.append(self.Font.render('No Scores To Display', True, (0, 0, 0)))
+
+    def ProcessInputs(self, events, pressed_keys):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE or event.key == pygame.K_ESCAPE:
+                    self.SwitchScene(TitleScene())
+
+    def Render(self, screen):
+        screen.fill((80, 180, 100))
+        screen.blit(self.TItle, (Constants.SCREEN_WIDTH / 2 - self.TItle.get_width() / 2, 10))
+        for i in range(0, len(self.scoreRender)):
+            screen.blit(self.scoreRender[i], (15, self.Font.get_height() * i + self.TItle.get_height() + 10))
 
 
 class SettingsScene(TitleScene):
@@ -402,11 +438,13 @@ class EndScene(SceneBase):
         self.Font = pygame.font.SysFont("Lucida Console", 56)
         self.endtitle = self.TitleFont.render('Game Over', True, (200, 40, 20))
         self.endmsg = self.Font.render('Press Enter/Space to Continue', True, (150, 150, 150))
+        self.Database = DatabaseHandler.Database()
 
     def ProcessInputs(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    self.Database.write_score(Constants.SCORE, Constants.playerName)
                     self.SwitchScene(TitleScene())
 
     def Render(self, screen):

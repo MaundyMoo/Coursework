@@ -112,3 +112,19 @@ class Database:
         INNER JOIN Players on Controls.ID = Players.ControlsID WHERE Players.UserName = ?
         ''', (playerName,))
         return self.cur.fetchone()
+
+    def write_score(self, score, playerName):
+        self.cur.execute('''SELECT ID FROM Players WHERE UserName = ?''', (playerName,))
+        id = self.cur.fetchone()[0]
+        self.cur.execute('''INSERT INTO Scores (PlayerID, Score) VALUES (?, ?)''', (id, score))
+        self.con.commit()
+
+    def read_scores(self):
+        self.cur.execute('''
+                SELECT UserName, Score 
+                FROM Players P
+                INNER JOIN Scores AS S
+                    ON P.ID = S.PlayerID
+                ORDER BY S.Score DESC
+                ''')
+        return self.cur.fetchall()
