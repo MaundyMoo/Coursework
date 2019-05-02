@@ -1,5 +1,9 @@
 *.pyc
 .idea/
+<<<<<<< HEAD
 venv/
 dist/
 build/
+=======
+venv/
+>>>>>>> parent of d231d2c... gitignore update
