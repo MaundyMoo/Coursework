@@ -320,7 +320,7 @@ class SettingsScene(TitleScene):
 class GameScene(SceneBase):
     def __init__(self, Sound=None):
 
-        self.spritesheet = Image.SpriteSheet(path="res/testSheet.png", spriteSize=32)
+        self.spritesheet = Image.SpriteSheet(path="res\\testSheet.png", spriteSize=32)
         self.OffsetX, self.OffsetY = 0, 0
         self.animTiles = []
         self.backRendered = False

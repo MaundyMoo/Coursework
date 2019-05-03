@@ -9,11 +9,10 @@ TILESIZE = 64
 
 PlayerControls = [273, 274, 276, 275]
 playerName = 'Default'
+SCORE = 0
 
 # Gets the directory of where the file is being run from
 WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-
-SCORE = 0
 
 
 # Joins any input path to the working directory
