@@ -193,8 +193,9 @@ class SettingsScene(TitleScene):
             self.playerInput = True
         # Select Controls
         elif self.playerInput and not self.controlSelect:
-            self.controlSelect = True
-            self.playerInput = False
+            if len(self.textinput.get_text()) < 10:
+                self.controlSelect = True
+                self.playerInput = False
         # Set all to false
         else:
             self.Database.create_player(self.textinput.get_text(), self.controlsDatabase[self.controlPointer][0])
